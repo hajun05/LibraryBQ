@@ -29,9 +29,8 @@ public partial class LibraryBqContext : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-// #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
     {
-        // 설정 파일 - 구성 객체를 이용한 연결문자열 사용
+        // Json 설정 파일(appsetting.json) - 구성 객체(IConfiguration)를 이용한 연결문자열 사용, DB 연동 실행.
         string? connStr = App.Config.GetConnectionString("MSSQLConnection");
         optionsBuilder.UseSqlServer(connStr);
     }
