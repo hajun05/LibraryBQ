@@ -5,13 +5,13 @@ using Microsoft.Extensions.Configuration;
 
 namespace LibraryBQ.Model;
 
-public partial class LibraryBqContext : DbContext
+public partial class LibraryBQContext : DbContext
 {
-    public LibraryBqContext()
+    public LibraryBQContext()
     {
     }
 
-    public LibraryBqContext(DbContextOptions<LibraryBqContext> options)
+    public LibraryBQContext(DbContextOptions<LibraryBQContext> options)
         : base(options)
     {
     }
