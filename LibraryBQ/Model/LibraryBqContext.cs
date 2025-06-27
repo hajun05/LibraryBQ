@@ -28,7 +28,7 @@ public partial class LibraryBQContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) // DI 컨테이너 DbContext 폴링 적용, 더이상 미사용
     {
         // Json 설정 파일(appsetting.json) - 구성 객체(IConfiguration)를 이용한 연결문자열 사용, DB 연동 실행.
         string? connStr = App.Config.GetConnectionString("MSSQLConnection");

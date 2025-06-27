@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <Folder Include="DB_Define\" />
+    <Folder Include="Image\" />
     <Folder Include="ViewModel\" />
     <Folder Include="View\" />
   </ItemGroup>
