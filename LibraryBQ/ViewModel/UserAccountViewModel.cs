@@ -22,9 +22,23 @@ namespace LibraryBQ.ViewModel
             set => SetProperty(ref accountStore, value);
         }
 
-        [RelayCommand] private void Login(string userNo, string password)
+        private string _inputUserNo;
+        private string _inputPassword;
+
+        public string InputUserNo 
+        {  
+            get => _inputUserNo;
+            set => SetProperty(ref _inputUserNo, value); 
+        }
+        public string InputPassword
         {
-            if (userNo.Trim() == "" || password.Trim() == "")
+            get => _inputPassword;
+            set => SetProperty(ref _inputPassword, value);
+        }
+
+        [RelayCommand] private void Login()
+        {
+            if (InputUserNo.Trim() == "" || InputPassword.Trim() == "")
             {
                 MessageBox.Show("필수 정보들을 입력해 주십시오.");
             }
@@ -32,7 +46,8 @@ namespace LibraryBQ.ViewModel
             {
                 using (var db = new LibraryBQContext())
                 {
-                    User? LoginUser = db.Users.FirstOrDefault(x => x.UserNo == userNo && x.Password.Equals(password));
+                    User? LoginUser = db.Users.FirstOrDefault(x => x.UserNo == InputUserNo && x.Password.Equals(InputPassword));
+
                     if (LoginUser == null)
                     {
                         MessageBox.Show($"아이디 혹은 비밀번호가 틀립니다.\r\n다시 한번 확인해 주십시오.");
