@@ -5,21 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LibraryBQ.View"
         mc:Ignorable="d"
-        WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="CanMinimize"
-        FontSize="18"
-        Title="LibraryBQ" Height="550" Width="750">
+        WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="CanMinimize" Icon="/Image/Logo_Simple.png"
+        Name="LibraryBQMain" Height="550" Width="750">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.7*"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="2*"/>
-            <RowDefinition Height="5*"/>
-            <RowDefinition Height="3*"/>
+            <RowDefinition Height="8*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         
-        <!-- 커스텀 타이틀 영역 -->
-        <Grid Grid.Row="0" Background="#FF8EAFF7">
+        <!--커스텀 타이틀 영역-->
+        <Grid Grid.Row="0" Background="#FF8EAFF7" MouseLeftButtonDown="Grid_MouseLeftButtonDown">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="3*"/>
@@ -28,11 +27,92 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Image Grid.Column="0" Source="/Image/Logo_Simple.png" Margin="5"/>
-            <TextBlock Grid.Column="1" Text="작은 도서관" FontSize="15" VerticalAlignment="Center"/>
-            <Button x:Name="Minimizebtn" Grid.Column="3" Content="—" FontWeight="Bold" Background="Transparent" Click="Minimizebtn_Click"/>
-            <Button x:Name="Closebtn" Grid.Column="4" Content="⨉" FontWeight="Bold" Background="Transparent" Click="Closebtn_Click"/>
+            <TextBlock Grid.Column="1" Text="작은도서관" FontFamily="Malgun Gothic" FontSize="15" VerticalAlignment="Center"/>
+            <Button x:Name="Minimizebtn" Grid.Column="3" Content="—" FontWeight="Bold" Background="Transparent" BorderBrush="Transparent" Click="Minimizebtn_Click"/>
+            <Button x:Name="Closebtn" Grid.Column="4" Content="⨉" FontWeight="Bold" Background="Transparent" BorderBrush="Transparent" Click="Closebtn_Click"/>
         </Grid>
         
+        <!--상단 메뉴바 영역-->
+        <Grid Grid.Row="1" Background="#FFD2DCE6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="Loginbtn" HorizontalAlignment="Right" Width="70" Content="로그인" FontSize="12" FontWeight="SemiBold" Background="Transparent" BorderBrush="Transparent"/>
+        </Grid>
+
+        <!--메뉴바 구분선-->
+        <Line Grid.Row="2" StrokeThickness="2" Stroke="LightGray"/>
+
+        <!--중단 메뉴바 영역-->
+        <Grid Grid.Row="3" Background="#FFD2DCE6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="6*"/>
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0" Source="/Image/Logo.png" Margin="5"/>
+            
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="3*"/>
+                    <RowDefinition Height="2*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" FontFamily="HYPost" FontSize="25" FontWeight="SemiBold" VerticalAlignment="Bottom" Text="작은도서관" Foreground="DarkBlue"/>
+                <TextBlock Grid.Row="1" FontFamily="Malgun Gothic" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Top" Text="MINI LIBRARY" Foreground="DarkBlue"/>
+            </Grid>
+
+            <Grid Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="BookQuerybtn" Grid.Column="2" Background="Transparent" BorderBrush="Transparent">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="자료검색" FontSize="18" FontWeight="SemiBold" Foreground="DarkBlue" VerticalAlignment="Center"/>
+                        <Image Grid.Column="1" Source="/Image/Search.png"/>
+                        <!--이미지 소스에 색상 입히기용 직사각형 컨트롤, 추후 스타일로 등록하고 원하는 색상과 이미지 소스를 고를 수 있도록 개선해보기-->
+                        <Rectangle Grid.Column="1" Stroke="Transparent">
+                            <Rectangle.Fill>
+                                <SolidColorBrush Color="DarkBlue"/>
+                            </Rectangle.Fill>
+                            <Rectangle.OpacityMask>
+                                <ImageBrush ImageSource="/Image/Search.png"/>
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </Grid>
+                </Button>
+                <Button x:Name="MyHistorybtn" Grid.Column="3" Background="Transparent" BorderBrush="Transparent">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="이력조회" FontSize="18" FontWeight="SemiBold" Foreground="DarkBlue" VerticalAlignment="Center"/>
+                        <Image Grid.Column="1" Source="/Image/Login_History.png"/>
+                        <!--이미지 소스에 색상 입히기용 직사각형 컨트롤, 추후 스타일로 등록하고 원하는 색상과 이미지 소스를 고를 수 있도록 개선해보기-->
+                        <Rectangle Grid.Column="1" Stroke="Transparent">
+                            <Rectangle.Fill>
+                                <SolidColorBrush Color="DarkBlue"/>
+                            </Rectangle.Fill>
+                            <Rectangle.OpacityMask>
+                                <ImageBrush ImageSource="/Image/Login_History.png"/>
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </Grid>
+                </Button>
+            </Grid>
+        </Grid>
         
+        <!--하단 검색창 영역-->
+        <Border Grid.Row="4" Margin="100, 50, 100, 200" Background="#FF457AF0" CornerRadius="15">
+            
+        </Border>
+
     </Grid>
 </Window>
