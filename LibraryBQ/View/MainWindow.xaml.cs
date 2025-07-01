@@ -41,5 +41,13 @@ namespace LibraryBQ.View
                 this.DragMove();
             }
         }
+
+        private void MainQueryBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(MainQueryBox.Text))
+                MainQueryPromptText.Visibility = Visibility.Hidden;
+            else
+                MainQueryPromptText.Visibility = Visibility.Visible;
+        }
     }
 }
