@@ -13,7 +13,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="2*"/>
-            <RowDefinition Height="8*"/>
+            <RowDefinition Height="380"/>
         </Grid.RowDefinitions>
         
         <!--커스텀 타이틀 영역-->
@@ -40,7 +40,7 @@
         </Grid>
 
         <!--메뉴바 구분선-->
-        <Line Grid.Row="2" StrokeThickness="2" Stroke="LightGray"/>
+        <Line Grid.Row="2" X1="0" X2="750" Y1="0" Y2="0" StrokeThickness="3" Stroke="LightGray"/>
 
         <!--중단 메뉴바 영역-->
         <Grid Grid.Row="3" Background="#FFD2DCE6">
@@ -110,7 +110,7 @@
         
         <!--하단 콘텐츠 영역. 상황에 따라 맞는 UserControl을 바인딩-->
         <Grid x:Name="MainSection" Grid.Row="4" Panel.ZIndex="1">
-            <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden"/>
+            <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden" Height="auto"/>
         </Grid>
 
     </Grid>
