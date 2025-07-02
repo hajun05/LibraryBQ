@@ -27,11 +27,11 @@
                 </Style>
             </DataGrid.ColumnHeaderStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="*" Visibility="Hidden"/>
-                <DataGridTextColumn Header="등록번호" Binding="{Binding Year}" Width="*"/>
-                <DataGridTextColumn Header="도서상태" Binding="{Binding Name}" Width="*"/>
-                <DataGridTextColumn Header="반납예정일" Binding="{Binding Surname}" Width="*"/>
-                <DataGridTextColumn Header="예약" Binding="{Binding MonthName}" Width="*"/>
+                <DataGridTextColumn Header="Id" Binding="{Binding}" Width="*" Visibility="Hidden"/>
+                <DataGridTextColumn Header="등록번호" Binding="{Binding}" Width="*"/>
+                <DataGridTextColumn Header="도서상태" Binding="{Binding}" Width="*"/>
+                <DataGridTextColumn Header="반납예정일" Binding="{Binding}" Width="*"/>
+                <DataGridTextColumn Header="대출/예약" Binding="{Binding}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
