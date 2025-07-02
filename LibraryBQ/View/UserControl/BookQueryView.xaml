@@ -1,0 +1,65 @@
+﻿<UserControl x:Class="LibraryBQ.View.BookQueryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:LibraryBQ.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="380" d:DesignWidth="750" Background="White">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="7*"/>
+        </Grid.RowDefinitions>
+        
+        <Border Grid.Row="0" Margin="110, 20, 110, 20" BorderBrush="DarkBlue" BorderThickness="2">
+            <Grid Margin="15, 0, 0, 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="7*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBox x:Name="MainQueryBox" Grid.Column="0" FontSize="18" VerticalAlignment="Center" BorderBrush="Transparent" BorderThickness="0" TextChanged="MainQueryBox_TextChanged"/>
+                <TextBlock x:Name="MainQueryPromptText" Grid.Column="0" Text="도서 통합 검색" FontSize="18" IsHitTestVisible="False" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="Gray"/>
+                <Button x:Name="MainQuerybtn" Grid.Column="1" Background="Transparent" BorderBrush="Transparent">
+                    <Grid>
+                        <Image Source="/Image/Search_Main.png" Margin="-5"/>
+                        <!--이미지 소스에 색상 입히기용 직사각형 컨트롤, 추후 스타일로 등록하고 원하는 색상과 이미지 소스를 고를 수 있도록 개선해보기-->
+                        <Rectangle Stroke="Transparent" Fill="DarkGray" Margin="-5">
+                            <Rectangle.OpacityMask>
+                                <ImageBrush ImageSource="/Image/Search_Main.png"/>
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </Grid>
+                </Button>
+            </Grid>
+        </Border>
+
+        <DataGrid x:Name="QueriedBookResult" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="False" SelectionMode="Single" HeadersVisibility="None" Background="White" BorderBrush="Transparent">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid Margin="10,0,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="2*"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
+
+                                <Button Grid.Row="0" x:Name="QueriedBookbtn" BorderBrush="Transparent">
+                                    <Grid>
+                                        <TextBlock x:Name="QueriedBookTitle" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Button>
+
+                                <TextBlock x:Name="QueriedBookAuthor" Grid.Row="1" FontSize="13" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="QueriedBookNum" Grid.Row="2" FontSize="13" VerticalAlignment="Center"/>
+                            </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>
