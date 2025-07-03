@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using static LibraryBQ.ViewModel.HomeViewModel;
 
 namespace LibraryBQ.ViewModel
@@ -18,6 +19,7 @@ namespace LibraryBQ.ViewModel
         private HomeViewModel _homeViewModel;
         private BookQueryViewModel _bookQueryViewModel;
         private LoginViewModel _loginViewModel;
+        private bool _isLogin;
 
         public ObservableObject CurrentViewModel
         {
@@ -27,6 +29,11 @@ namespace LibraryBQ.ViewModel
         public HomeViewModel HomeViewModel
         {
             get => _homeViewModel;
+        }
+        public bool IsLogin
+        {
+            get => _isLogin;
+            set => SetProperty(ref _isLogin, value);
         }
 
         // 생성자 ----------------------------------------------
@@ -38,10 +45,11 @@ namespace LibraryBQ.ViewModel
 
             // 각 하위 ViewModel에서 상위 ViewModel의 상태 변경을 수행할 대리자 초기화
             _homeViewModel.HomeBookQueryAction = () => { CurrentViewModel = _bookQueryViewModel; };
+            _loginViewModel.LoginEndAction = () => { CurrentViewModel = _homeViewModel; IsLogin = true; };
 
             // 초기화면
             CurrentViewModel = _homeViewModel;
-            _loginViewModel = loginViewModel;
+            IsLogin = false;
         }
 
         // 커멘드 ----------------------------------------------
@@ -62,8 +70,24 @@ namespace LibraryBQ.ViewModel
 
         [RelayCommand] private void LoginbtnClick() // 로그인버튼 클릭 커멘드
         {
-            if (CurrentViewModel != _loginViewModel)
-                CurrentViewModel = _loginViewModel;
+            if (!IsLogin)
+            {
+                if (CurrentViewModel != _loginViewModel)
+                {
+                    _loginViewModel.InputUserNo = string.Empty;
+                    _loginViewModel.InputPassword = string.Empty;
+                    CurrentViewModel = _loginViewModel;
+                }
+            }
+            else
+            {
+                if (MessageBox.Show("로그아웃하시겠습니까?", "", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                {
+                    LoginUserAccountStore.DetachInstance();
+                    IsLogin = false;
+                }
+            }
+            
         }
     }
 }

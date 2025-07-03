@@ -6,9 +6,29 @@
         xmlns:local="clr-namespace:LibraryBQ"
         xmlns:views="clr-namespace:LibraryBQ.View"
         xmlns:viewmodels="clr-namespace:LibraryBQ.ViewModel"
+        xmlns:services="clr-namespace:LibraryBQ.Service"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="CanMinimize" Icon="/Image/Logo_Simple.png"
         Name="LibraryBQMain" Height="550" Width="750">
+
+    <Window.Resources>
+        <!--ContentControl + DataTemplate 구조 : ViewModel 타입에 따라 자동으로 View를 매핑 및 표시하는 MVVM 패턴의 핵심 기능 제공-->
+        <DataTemplate x:Name="HomeTemplate" DataType="{x:Type viewmodels:HomeViewModel}">
+            <views:HomeView/>
+        </DataTemplate>
+        <DataTemplate x:Name="BookQueryTemplate" DataType="{x:Type viewmodels:BookQueryViewModel}">
+            <views:BookQueryView/>
+        </DataTemplate>
+        <DataTemplate x:Name="LoginTemplate" DataType="{x:Type viewmodels:LoginViewModel}">
+            <views:LoginView/>
+        </DataTemplate>
+
+        <!--Bool 프로퍼티를 Visibility에 바인딩하기 위한 변환기-->
+        <!--코드 맨 아래쪽에 선언하니 Converter를 인식하지 못하던 문제가 리소스를 코드 위에서 선언하니 해결. StaticResource는 맨 위에서 선언 권장-->
+        <services:BooleanToVisibilityConverter x:Key="BoolVisibilityConverter"/>
+        <services:ReverseBooleanToVisibilityConverter x:Key="ReverseBoolVisibilityConverter"/>
+    </Window.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -39,7 +59,9 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Button x:Name="Loginbtn" HorizontalAlignment="Right" Width="70" Content="로그인" FontSize="12" FontWeight="SemiBold" Background="Transparent" BorderBrush="Transparent"
-                    Command="{Binding LoginbtnClickCommand}"/>
+                    Command="{Binding LoginbtnClickCommand}" Visibility="{Binding IsLogin, Converter={StaticResource ReverseBoolVisibilityConverter}}"/>
+            <Button x:Name="Logoutbtn" HorizontalAlignment="Right" Width="70" Content="로그아웃" FontSize="12" FontWeight="SemiBold" Background="Transparent" BorderBrush="Transparent"
+                    Command="{Binding LoginbtnClickCommand}" Visibility="{Binding IsLogin, Converter={StaticResource BoolVisibilityConverter}}"/>
         </Grid>
 
         <!--메뉴바 구분선-->
@@ -118,16 +140,5 @@
 
     </Grid>
 
-    <!--ContentControl + DataTemplate 구조 : ViewModel 타입에 따라 자동으로 View를 매핑 및 표시하는 MVVM 패턴의 핵심 기능 제공.-->
-    <Window.Resources>
-        <DataTemplate x:Name="HomeTemplate" DataType="{x:Type viewmodels:HomeViewModel}">
-            <views:HomeView/>
-        </DataTemplate>
-        <DataTemplate x:Name="BookQueryTemplate" DataType="{x:Type viewmodels:BookQueryViewModel}">
-            <views:BookQueryView/>
-        </DataTemplate>
-        <DataTemplate x:Name="LoginTemplate" DataType="{x:Type viewmodels:LoginViewModel}">
-            <views:LoginView/>
-        </DataTemplate>
-    </Window.Resources>
+
 </Window>
