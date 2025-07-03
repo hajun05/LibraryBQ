@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LibraryBQ.ViewModel
 {
-    internal class ComprehensiveHistoryViewModel
+    internal class HistoryViewModel
     {
     }
 }

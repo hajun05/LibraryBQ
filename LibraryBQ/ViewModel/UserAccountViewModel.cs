@@ -12,7 +12,7 @@ using System.Windows;
 namespace LibraryBQ.ViewModel
 {
     // 로그인 처리 ViewModel
-    internal partial class UserAccountViewModel : ObservableObject
+    internal partial class LoginViewModel : ObservableObject
     {
         private UserAccountStore accountStore;
 

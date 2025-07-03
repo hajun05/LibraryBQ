@@ -18,7 +18,7 @@
                     <ColumnDefinition Width="7*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBox x:Name="MainQueryBox" Grid.Column="0" FontSize="18" VerticalAlignment="Center" BorderBrush="Transparent" BorderThickness="0" TextChanged="MainQueryBox_TextChanged"/>
+                <TextBox x:Name="MainQueryBox" Grid.Column="0" FontSize="18" VerticalAlignment="Center" BorderBrush="Transparent" BorderThickness="0"/>
                 <TextBlock x:Name="MainQueryPromptText" Grid.Column="0" Text="도서 통합 검색" FontSize="18" IsHitTestVisible="False" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="Gray"/>
                 <Button x:Name="MainQuerybtn" Grid.Column="1" Background="Transparent" BorderBrush="Transparent">
                     <Grid>
