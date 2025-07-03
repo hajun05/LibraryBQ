@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static LibraryBQ.ViewModel.HomeViewModel;
 
 namespace LibraryBQ.ViewModel
 {
@@ -22,12 +23,19 @@ namespace LibraryBQ.ViewModel
             get { return _currentViewModel; }
             set => SetProperty(ref _currentViewModel, value);
         }
+        public HomeViewModel HomeViewModel
+        {
+            get => _homeViewModel;
+        }
 
         // 생성자 ----------------------------------------------
         public MainWindowViewModel(HomeViewModel homeViewModel, BookQueryViewModel bookQueryViewModel)
         {
             _homeViewModel = homeViewModel;
             _bookQueryViewModel = bookQueryViewModel;
+
+            // 각 하위 ViewModel에서 상위 ViewModel의 상태 변경을 수행할 대리자 초기화
+            _homeViewModel.HomeBookQueryAction = () => { CurrentViewModel = _bookQueryViewModel; };
 
             // 초기화면
             CurrentViewModel = _homeViewModel;
