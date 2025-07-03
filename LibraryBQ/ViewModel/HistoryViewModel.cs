@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LibraryBQ.ViewModel
 {
-    internal class HistoryViewModel
+    public partial class HistoryViewModel : ObservableObject
     {
     }
 }

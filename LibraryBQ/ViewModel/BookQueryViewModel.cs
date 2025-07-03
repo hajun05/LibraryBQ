@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LibraryBQ.ViewModel
 {
-    internal class BookQueryViewModel
+    public partial class BookQueryViewModel : ObservableObject
     {
     }
 }
