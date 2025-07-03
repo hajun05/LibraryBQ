@@ -51,7 +51,7 @@
                 <ColumnDefinition Width="6*"/>
             </Grid.ColumnDefinitions>
 
-            <Button x:Name="Homebtn" Grid.Column="0" Background="Transparent" BorderBrush="Transparent">
+            <Button x:Name="Homebtn" Grid.Column="0" Background="Transparent" BorderBrush="Transparent" Command="{Binding HomebtnClickCommand}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
