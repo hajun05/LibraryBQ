@@ -38,7 +38,8 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button x:Name="Loginbtn" HorizontalAlignment="Right" Width="70" Content="로그인" FontSize="12" FontWeight="SemiBold" Background="Transparent" BorderBrush="Transparent"/>
+            <Button x:Name="Loginbtn" HorizontalAlignment="Right" Width="70" Content="로그인" FontSize="12" FontWeight="SemiBold" Background="Transparent" BorderBrush="Transparent"
+                    Command="{Binding LoginbtnClickCommand}"/>
         </Grid>
 
         <!--메뉴바 구분선-->
@@ -124,6 +125,9 @@
         </DataTemplate>
         <DataTemplate x:Name="BookQueryTemplate" DataType="{x:Type viewmodels:BookQueryViewModel}">
             <views:BookQueryView/>
+        </DataTemplate>
+        <DataTemplate x:Name="LoginTemplate" DataType="{x:Type viewmodels:LoginViewModel}">
+            <views:LoginView/>
         </DataTemplate>
     </Window.Resources>
 </Window>
