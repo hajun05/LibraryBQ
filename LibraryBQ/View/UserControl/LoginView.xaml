@@ -37,10 +37,13 @@
                 <TextBlock Text="로그인을 하시면 더 많은 도서관의 서비스를 이용하실 수 있습니다." Grid.Row="2" FontSize="16" Foreground="Gray" VerticalAlignment="Center"/>
 
                 <TextBlock Text="아이디" Grid.Row="3" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                <TextBox Name="txtUserNo" Grid.Row="3" Width="350" Height="40" Margin="0,0,120,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBox Name="txtUserNo" Grid.Row="3" Width="350" Height="40" Margin="0,0,120,0" HorizontalAlignment="Right" VerticalAlignment="Center"
+                         FontSize="15" Text="{Binding InputUserNo, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center"/>
                 <TextBlock Text="비밀번호" Grid.Row="4" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                <TextBox x:Name="txtPassword" Grid.Row="4" Width="350" Height="40" Margin="0,0,120,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <Button x:Name="btnLogin" Content="로그인" Grid.Row="3" Grid.RowSpan="2" Width="100" Height="100" FontSize="18" Foreground="White" Background="DarkBlue" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBox x:Name="txtPassword" Grid.Row="4" Width="350" Height="40" Margin="0,0,120,0" HorizontalAlignment="Right" VerticalAlignment="Center"
+                         FontSize="15" Text="{Binding InputPassword, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center"/>
+                <Button x:Name="btnLogin" Content="로그인" Grid.Row="3" Grid.RowSpan="2" Width="100" Height="100" FontSize="18" Foreground="White" Background="DarkBlue" HorizontalAlignment="Right" VerticalAlignment="Center"
+                        Command="{Binding LoginbtnClickCommand}"/>
             </Grid>
         </Border>
     </Grid>
