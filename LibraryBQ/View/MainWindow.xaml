@@ -75,7 +75,7 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Button x:Name="BookQuerybtn" Grid.Column="1" Background="Transparent" BorderBrush="Transparent">
+                <Button x:Name="BookQuerybtn" Grid.Column="1" Background="Transparent" BorderBrush="Transparent" Command="{Binding BookbtnClickCommand}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="3*"/>
@@ -121,6 +121,9 @@
     <Window.Resources>
         <DataTemplate x:Name="HomeTemplate" DataType="{x:Type viewmodels:HomeViewModel}">
             <views:HomeView/>
+        </DataTemplate>
+        <DataTemplate x:Name="BookQueryTemplate" DataType="{x:Type viewmodels:BookQueryViewModel}">
+            <views:BookQueryView/>
         </DataTemplate>
     </Window.Resources>
 </Window>

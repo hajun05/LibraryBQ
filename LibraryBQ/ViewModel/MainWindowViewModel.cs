@@ -15,6 +15,7 @@ namespace LibraryBQ.ViewModel
         // 필드와 프로퍼티 --------------------------------------
         private ObservableObject _currentViewModel;
         private HomeViewModel _homeViewModel;
+        private BookQueryViewModel _bookQueryViewModel;
 
         public ObservableObject CurrentViewModel
         {
@@ -23,9 +24,10 @@ namespace LibraryBQ.ViewModel
         }
 
         // 생성자 ----------------------------------------------
-        public MainWindowViewModel(HomeViewModel homeViewModel)
+        public MainWindowViewModel(HomeViewModel homeViewModel, BookQueryViewModel bookQueryViewModel)
         {
             _homeViewModel = homeViewModel;
+            _bookQueryViewModel = bookQueryViewModel;
 
             // 초기화면
             CurrentViewModel = _homeViewModel;
@@ -36,6 +38,12 @@ namespace LibraryBQ.ViewModel
         {
             if (CurrentViewModel != _homeViewModel)
                 CurrentViewModel = _homeViewModel;
+        }
+
+        [RelayCommand] private void BookbtnClick()
+        {
+            if (CurrentViewModel != _bookQueryViewModel)
+                CurrentViewModel = _bookQueryViewModel;
         }
     }
 }

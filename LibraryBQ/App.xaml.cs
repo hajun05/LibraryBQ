@@ -39,9 +39,11 @@ namespace LibraryBQ
             // DI 컨테이너를 이용한 View와 ViewModel 연결. View 생성 시 ViewModel 자동 주입 및 바인딩
             services.AddTransient<MainWindowViewModel>();
             services.AddTransient<HomeViewModel>();
+            services.AddTransient<BookQueryViewModel>();
             services.AddTransient<LoginViewModel>();
             services.AddSingleton<MainWindow>();
             services.AddSingleton<HomeView>();
+            services.AddSingleton<BookQueryView>();
             services.AddSingleton<LoginView>();
 
             // DI 컨테이너 초기화
