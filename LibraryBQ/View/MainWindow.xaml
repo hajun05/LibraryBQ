@@ -3,7 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:LibraryBQ.View"
+        xmlns:local="clr-namespace:LibraryBQ"
+        xmlns:views="clr-namespace:LibraryBQ.View"
+        xmlns:viewmodels="clr-namespace:LibraryBQ.ViewModel"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="CanMinimize" Icon="/Image/Logo_Simple.png"
         Name="LibraryBQMain" Height="550" Width="750">
@@ -110,8 +112,15 @@
         
         <!--하단 콘텐츠 영역. 상황에 따라 맞는 UserControl을 바인딩-->
         <Grid x:Name="MainSection" Grid.Row="4" Panel.ZIndex="1">
-            <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden" Height="auto"/>
+            <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden" Height="auto" Content="{Binding CurrentViewModel}"/>
         </Grid>
 
     </Grid>
+
+    <!--ContentControl + DataTemplate 구조 : ViewModel 타입에 따라 자동으로 View를 매핑 및 표시하는 MVVM 패턴의 핵심 기능 제공.-->
+    <Window.Resources>
+        <DataTemplate x:Name="HomeTemplate" DataType="{x:Type viewmodels:HomeViewModel}">
+            <views:HomeView/>
+        </DataTemplate>
+    </Window.Resources>
 </Window>
