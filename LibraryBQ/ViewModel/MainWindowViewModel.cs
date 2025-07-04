@@ -47,7 +47,7 @@ namespace LibraryBQ.ViewModel
             _loginUserAccountStore = LoginUserAccountStore.Instance();
 
             // 각 하위 ViewModel에서 상위 ViewModel의 상태 변경을 수행할 대리자 초기화
-            _homeViewModel.HomeBookQueryAction = () => { CurrentViewModel = _bookQueryViewModel; };
+            _homeViewModel.HomeBookQueryAction = () => { _bookQueryViewModel.InputQueryStr = _homeViewModel.InputQueryStr; CurrentViewModel = _bookQueryViewModel; };
             _loginViewModel.LoginEndAction = () => { CurrentViewModel = _homeViewModel; IsLogin = true; };
 
             // 초기화면

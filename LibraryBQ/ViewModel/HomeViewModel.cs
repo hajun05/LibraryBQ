@@ -24,7 +24,10 @@ namespace LibraryBQ.ViewModel
         // 커멘드 ----------------------------------------------
         [RelayCommand] private void HomeBookQuery()
         {
-            HomeBookQueryAction?.Invoke();
+            if (InputQueryStr.Trim() != "")
+            {
+                HomeBookQueryAction?.Invoke();
+            }
         }
     }
 }
