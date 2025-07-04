@@ -14,13 +14,13 @@
                     <ColumnDefinition Width="7*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBox x:Name="MainQueryBox" Grid.Column="0" Text="{Binding InputQueryStr, UpdateSourceTrigger=PropertyChanged}" FontSize="18" VerticalAlignment="Center" BorderBrush="Transparent" BorderThickness="0" TextChanged="MainQueryBox_TextChanged">
+                <TextBox x:Name="HomeQueryBox" Grid.Column="0" Text="{Binding InputQueryStr, UpdateSourceTrigger=PropertyChanged}" FontSize="18" VerticalAlignment="Center" BorderBrush="Transparent" BorderThickness="0" TextChanged="HomeQueryBox_TextChanged">
                     <TextBox.InputBindings>
                         <KeyBinding Key="Enter" Command="{Binding HomeBookQueryCommand}" />
                     </TextBox.InputBindings>
                 </TextBox>
-                <TextBlock x:Name="MainQueryPromptText" Grid.Column="0" Text="도서 통합 검색" FontSize="18" IsHitTestVisible="False" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="Gray"/>
-                <Button x:Name="MainQuerybtn" Grid.Column="1" Background="Transparent" BorderBrush="Transparent" Command="{Binding HomeBookQueryCommand}">
+                <TextBlock x:Name="HomeQueryPromptText" Grid.Column="0" Text="도서 통합 검색" FontSize="18" IsHitTestVisible="False" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="Gray"/>
+                <Button x:Name="HomeQuerybtn" Grid.Column="1" Background="Transparent" BorderBrush="Transparent" Command="{Binding HomeBookQueryCommand}">
                     <Grid>
                         <Image Source="/Image/Search_Main.png"/>
                         <!--이미지 소스에 색상 입히기용 직사각형 컨트롤, 추후 스타일로 등록하고 원하는 색상과 이미지 소스를 고를 수 있도록 개선해보기-->

@@ -25,12 +25,12 @@ namespace LibraryBQ.View
             InitializeComponent();
         }
 
-        private void MainQueryBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void HomeQueryBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(MainQueryBox.Text))
-                MainQueryPromptText.Visibility = Visibility.Hidden;
+            if (!string.IsNullOrEmpty(HomeQueryBox.Text))
+                HomeQueryPromptText.Visibility = Visibility.Hidden;
             else
-                MainQueryPromptText.Visibility = Visibility.Visible;
+                HomeQueryPromptText.Visibility = Visibility.Visible;
         }
     }
 }
