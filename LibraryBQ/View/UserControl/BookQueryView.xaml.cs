@@ -24,5 +24,13 @@ namespace LibraryBQ.View
         {
             InitializeComponent();
         }
+
+        private void BookQueryBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(BookQueryBox.Text))
+                BookQueryPromptText.Visibility = Visibility.Hidden;
+            else
+                BookQueryPromptText.Visibility = Visibility.Visible;
+        }
     }
 }
