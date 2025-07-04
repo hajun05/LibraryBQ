@@ -19,6 +19,7 @@ namespace LibraryBQ.ViewModel
         private HomeViewModel _homeViewModel;
         private BookQueryViewModel _bookQueryViewModel;
         private LoginViewModel _loginViewModel;
+        private LoginUserAccountStore _loginUserAccountStore; // 해당 싱글톤 인스턴스로 IsLogin 프로퍼티 이동. 작동은 잘 되는데 보이는게 이상하다? 겹처보이거나 하나만 보이거나 문제있음.
         private bool _isLogin;
 
         public ObservableObject CurrentViewModel
@@ -26,9 +27,10 @@ namespace LibraryBQ.ViewModel
             get { return _currentViewModel; }
             set => SetProperty(ref _currentViewModel, value);
         }
-        public HomeViewModel HomeViewModel
+        public LoginUserAccountStore LoginUserAccountStore
         {
-            get => _homeViewModel;
+            get => _loginUserAccountStore;
+            set => SetProperty(ref _loginUserAccountStore, value);
         }
         public bool IsLogin
         {
@@ -42,6 +44,7 @@ namespace LibraryBQ.ViewModel
             _homeViewModel = homeViewModel;
             _bookQueryViewModel = bookQueryViewModel;
             _loginViewModel = loginViewModel;
+            _loginUserAccountStore = LoginUserAccountStore.Instance();
 
             // 각 하위 ViewModel에서 상위 ViewModel의 상태 변경을 수행할 대리자 초기화
             _homeViewModel.HomeBookQueryAction = () => { CurrentViewModel = _bookQueryViewModel; };
@@ -83,11 +86,10 @@ namespace LibraryBQ.ViewModel
             {
                 if (MessageBox.Show("로그아웃하시겠습니까?", "", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 {
-                    LoginUserAccountStore.DetachInstance();
+                    LoginUserAccountStore.DetachLoginUserAccount();
                     IsLogin = false;
                 }
             }
-            
         }
     }
 }

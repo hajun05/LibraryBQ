@@ -14,30 +14,42 @@ namespace LibraryBQ.Service
     {
         // 필드와 프로퍼티 -------------------------------------------
         private User? _currentUserAccount;
+        private bool _isLogin;
 
         public User? CurrentLoginUserAccount
         {
             get { return _currentUserAccount; }
             set => SetProperty(ref _currentUserAccount, value);
         }
+        public bool IsLogin
+        {
+            get => _isLogin;
+            set => SetProperty(ref _isLogin, (CurrentLoginUserAccount != null ? true : false));
+        }
 
         // 생성자(싱글톤 패턴 적용) ------------------------------------
         private static LoginUserAccountStore userAccount;
-        private LoginUserAccountStore(User loginUser) 
+        private LoginUserAccountStore() { }
+        public static LoginUserAccountStore Instance()
         {
-            CurrentLoginUserAccount = loginUser;
+            if (userAccount == null)
+            {
+                userAccount = new LoginUserAccountStore();
+            }
+            return userAccount;
         }
         public static LoginUserAccountStore Instance(User loginUser)
         {
             if (userAccount == null)
             {
-                userAccount = new LoginUserAccountStore(loginUser);
+                userAccount = new LoginUserAccountStore();
             }
+            userAccount.CurrentLoginUserAccount = loginUser;
             return userAccount;
         }
 
         // 메소드 ----------------------------------------------------
-        public static void DetachInstance()
+        public static void DetachLoginUserAccount()
         {
             if (userAccount != null)
             {
