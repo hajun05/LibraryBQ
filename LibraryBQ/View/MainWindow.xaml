@@ -59,7 +59,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Button x:Name="Loginbtn" HorizontalAlignment="Right" Width="70" Content="로그인" FontSize="12" FontWeight="SemiBold" Background="Transparent" BorderBrush="Transparent"
-                    Command="{Binding LoginbtnClickCommand}" Visibility="{Binding DataContext.LoginUserAccountStore.IsLogin, Converter={StaticResource ReverseBoolVisibilityConverter}}"/>
+                    Command="{Binding LoginbtnClickCommand}" Visibility="{Binding LoginUserAccountStore.IsLogin, Converter={StaticResource ReverseBoolVisibilityConverter}}"/>
             <Button x:Name="Logoutbtn" HorizontalAlignment="Right" Width="70" Content="로그아웃" FontSize="12" FontWeight="SemiBold" Background="Transparent" BorderBrush="Transparent"
                     Command="{Binding LoginbtnClickCommand}" Visibility="{Binding LoginUserAccountStore.IsLogin, Converter={StaticResource BoolVisibilityConverter}}"/>
         </Grid>

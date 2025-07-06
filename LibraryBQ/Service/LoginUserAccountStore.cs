@@ -19,12 +19,16 @@ namespace LibraryBQ.Service
         public User? CurrentLoginUserAccount
         {
             get { return _currentUserAccount; }
-            set => SetProperty(ref _currentUserAccount, value);
+            set
+            {
+                if (SetProperty(ref _currentUserAccount, value))
+                    IsLogin = (_currentUserAccount != null);
+            }
         }
         public bool IsLogin
         {
             get => _isLogin;
-            set => SetProperty(ref _isLogin, (CurrentLoginUserAccount != null ? true : false));
+            set => SetProperty(ref _isLogin, value);
         }
 
         // 생성자(싱글톤 패턴 적용) ------------------------------------
@@ -49,11 +53,11 @@ namespace LibraryBQ.Service
         }
 
         // 메소드 ----------------------------------------------------
-        public static void DetachLoginUserAccount()
+        public void DetachLoginUserAccount()
         {
-            if (userAccount != null)
+            if (CurrentLoginUserAccount != null)
             {
-                userAccount = null;
+                CurrentLoginUserAccount = null;
             }
         }
     }
