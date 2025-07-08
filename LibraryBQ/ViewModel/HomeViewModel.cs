@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using LibraryBQ.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +29,7 @@ namespace LibraryBQ.ViewModel
             if (InputQueryStr.Trim() != "")
             {
                 HomeBookQueryAction?.Invoke();
+                WeakReferenceMessenger.Default.Send(new CommandMessage(null));
             }
         }
     }
