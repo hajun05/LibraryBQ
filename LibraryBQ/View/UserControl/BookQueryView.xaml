@@ -40,7 +40,7 @@
 
         <DataGrid x:Name="QueriedBookResult" GridLinesVisibility="None" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="False" CanUserAddRows="False" SelectionMode="Single" 
                   HeadersVisibility="None" Background="White" BorderBrush="Transparent"
-                  ItemsSource="{Binding Books, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedBook}" >
+                  ItemsSource="{Binding QueriedBooks, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedBook}" >
             <DataGrid.Columns>
                 <DataGridTemplateColumn>
                     <DataGridTemplateColumn.CellTemplate>
