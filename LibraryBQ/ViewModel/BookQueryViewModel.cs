@@ -16,10 +16,22 @@ namespace LibraryBQ.ViewModel
     {
         // 필드와 프로퍼티 -----------------------------------------------------------
         private string _inputQueryStr;
+        private List<Book> _books;
+        private Book? _selectedBook;
         public string InputQueryStr
         {
             get => _inputQueryStr;
             set => SetProperty(ref _inputQueryStr, value);
+        }
+        public List<Book> Books
+        {
+            get { return _books; }
+            set => SetProperty(ref _books, value);
+        }
+        public Book? SelectedBook
+        {
+            get => _selectedBook;
+            set => SetProperty(ref _selectedBook, value);
         }
 
         public BookQueryViewModel()
@@ -30,7 +42,21 @@ namespace LibraryBQ.ViewModel
         // 커멘드 -------------------------------------------------------------------
         [RelayCommand] private void BookQuery()
         {
-            MessageBox.Show("확인");
+            if (Books != null)
+                Books.Clear();
+            using (LibraryBQContext db = new LibraryBQContext())
+            {
+                if (InputQueryStr.Trim() != "")
+                {
+                    Books = db.Books.Where(x => x.Title.Contains(InputQueryStr)).ToList();
+                    Books.AddRange(db.Books.Where(x => x.Author.Contains(InputQueryStr)).ToList());
+                }
+                else
+                {
+                    Books = db.Books.ToList();
+                    Books.AddRange(db.Books.ToList());
+                }
+            }
         }
     }
 }

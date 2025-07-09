@@ -41,6 +41,7 @@ namespace LibraryBQ
             services.AddTransient<HomeViewModel>();
             services.AddTransient<BookQueryViewModel>();
             services.AddTransient<LoginViewModel>();
+
             services.AddSingleton<MainWindow>();
             services.AddSingleton<HomeView>();
             services.AddSingleton<BookQueryView>();

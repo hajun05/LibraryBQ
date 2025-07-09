@@ -20,6 +20,8 @@ namespace LibraryBQ.View
     /// </summary>
     public partial class BookQueryView : UserControl
     {
+        private string _queryText;
+
         public BookQueryView()
         {
             InitializeComponent();

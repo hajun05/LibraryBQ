@@ -38,27 +38,30 @@
             </Grid>
         </Border>
 
-        <DataGrid x:Name="QueriedBookResult" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="False" SelectionMode="Single" HeadersVisibility="None" Background="White" BorderBrush="Transparent">
+        <DataGrid x:Name="QueriedBookResult" GridLinesVisibility="None" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="False" CanUserAddRows="False" SelectionMode="Single" 
+                  HeadersVisibility="None" Background="White" BorderBrush="Transparent"
+                  ItemsSource="{Binding Books, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedBook}" >
             <DataGrid.Columns>
                 <DataGridTemplateColumn>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Grid Margin="10,0,0,0">
+                            <Grid Margin="10" Height="120">
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="2*"/>
+                                    <RowDefinition Height="40"/>
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="auto"/>
                                 </Grid.RowDefinitions>
 
-                                <Button Grid.Row="0" x:Name="QueriedBookbtn" BorderBrush="Transparent">
+                                <Button Grid.Row="0" x:Name="QueriedBookbtn" Width="200" Height="40" VerticalAlignment="Top" HorizontalAlignment="Left" BorderBrush="Transparent">
                                     <Grid>
-                                        <TextBlock x:Name="QueriedBookTitle" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="QueriedBookTitle" Text="{Binding Title}" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center"/>
                                     </Grid>
                                 </Button>
 
-                                <TextBlock x:Name="QueriedBookAuthor" Grid.Row="1" FontSize="13" VerticalAlignment="Center"/>
-                                <TextBlock x:Name="QueriedBookNum" Grid.Row="2" FontSize="13" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="QueriedBookAuthor" Text="{Binding Author}" Grid.Row="1" FontSize="15" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="QueriedBookNum" Text="{Binding BookCopies.Count}" Grid.Row="2" FontSize="15" VerticalAlignment="Center"/>
+                                <Border Grid.Row="3" Height="1" Width="700" Background="#E0E0E0" Margin="0,10,0,0"/>
                             </Grid>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

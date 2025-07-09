@@ -24,7 +24,7 @@
         </StackPanel>
 
         <StackPanel Grid.Row="0" Grid.Column="1" Margin="10" Orientation="Vertical">
-            <Image HorizontalAlignment="Left" Height="110" Width="127" d:Width="100"/>
+            <Image HorizontalAlignment="Left" Source="/Image/cover.jpg" Height="110" Width="auto"/>
         </StackPanel>
 
         <DataGrid x:Name="gridBookCopy" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" AutoGenerateColumns="False" IsReadOnly="False" SelectionMode="Single" FontSize="12">
