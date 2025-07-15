@@ -19,6 +19,7 @@ namespace LibraryBQ.ViewModel
         private string _inputQueryStr;
         private ObservableCollection<Book> _queriedBooks;
         private Book? _selectedBook;
+        private IWindowService _iWindowService;
         public string InputQueryStr
         {
             get => _inputQueryStr;
@@ -36,8 +37,9 @@ namespace LibraryBQ.ViewModel
         }
 
         // 생성자 ------------------------------------------------------------------
-        public BookQueryViewModel()
+        public BookQueryViewModel(IWindowService iWindowService)
         {
+            _iWindowService = iWindowService;
             _queriedBooks = new ObservableCollection<Book>();
             WeakReferenceMessenger.Default.Register<CommandMessage>(this, (r, m) => BookQueryCommand.Execute(null));
         }
@@ -64,6 +66,12 @@ namespace LibraryBQ.ViewModel
                 foreach (Book book in result)
                     _queriedBooks.Add(book);
             }
+        }
+
+        [RelayCommand] private void BookCopyOpen()
+        {
+            if (_selectedBook != null)
+                _iWindowService.ShowBookCopyWindow(_selectedBook);
         }
     }
 }

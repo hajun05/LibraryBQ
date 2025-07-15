@@ -53,7 +53,7 @@
                                     <RowDefinition Height="auto"/>
                                 </Grid.RowDefinitions>
 
-                                <Button Grid.Row="0" x:Name="QueriedBookbtn" Width="200" Height="40" VerticalAlignment="Top" HorizontalAlignment="Left" BorderBrush="Transparent">
+                                <Button Grid.Row="0" x:Name="QueriedBookbtn" Width="200" Height="40" VerticalAlignment="Top" HorizontalAlignment="Left" BorderBrush="Transparent" Command="{Binding BookCopyOpenCommand}">
                                     <Grid>
                                         <TextBlock x:Name="QueriedBookTitle" Text="{Binding Title}" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center"/>
                                     </Grid>

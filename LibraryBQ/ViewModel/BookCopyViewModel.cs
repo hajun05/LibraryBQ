@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using LibraryBQ.Service;
 using LibraryBQ.Model;
 using System;
 using System.Collections.Generic;
@@ -11,5 +12,14 @@ namespace LibraryBQ.ViewModel
 {
     public partial class BookCopyViewModel : ObservableObject
     {
+        // 필드 및 프로퍼티
+        private Book _book;
+
+
+        // 생성자 --------------------------------------------------------------------
+        public BookCopyViewModel(Book selectedBook)
+        {
+            _book = selectedBook;
+        }
     }
 }

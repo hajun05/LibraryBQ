@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LibraryBQ.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +20,10 @@ namespace LibraryBQ.View
     /// </summary>
     public partial class BookCopyView : Window
     {
-        public BookCopyView()
+        public BookCopyView(BookCopyViewModel viewModel)
         {
             InitializeComponent();
+            DataContext = viewModel;
         }
     }
 }

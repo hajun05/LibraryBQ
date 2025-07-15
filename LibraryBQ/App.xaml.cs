@@ -1,4 +1,5 @@
-﻿using LibraryBQ.Model;
+﻿using LibraryBQ.Service;
+using LibraryBQ.Model;
 using LibraryBQ.View;
 using LibraryBQ.ViewModel;
 using Microsoft.EntityFrameworkCore;
@@ -37,15 +38,19 @@ namespace LibraryBQ
 
             // 서비스 컬렉션에 서비스(ViewModel) 및 클라이언트(View) 등록.
             // DI 컨테이너를 이용한 View와 ViewModel 연결. View 생성 시 ViewModel 자동 주입 및 바인딩
+            services.AddSingleton<IWindowService, WindowService>();
+
             services.AddTransient<MainWindowViewModel>();
             services.AddTransient<HomeViewModel>();
             services.AddTransient<BookQueryViewModel>();
             services.AddTransient<LoginViewModel>();
+            services.AddTransient<BookCopyViewModel>();
 
             services.AddSingleton<MainWindow>();
             services.AddSingleton<HomeView>();
             services.AddSingleton<BookQueryView>();
             services.AddSingleton<LoginView>();
+            services.AddSingleton<BookCopyView>();
 
             // DI 컨테이너 초기화
             ServiceProvider = services.BuildServiceProvider();
