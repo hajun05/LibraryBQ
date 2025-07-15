@@ -20,8 +20,12 @@ namespace LibraryBQ.Service
     {
         public void ShowBookCopyWindow(Book book) // 도서 부수 정보 열기 메소드
         {
-            var bookCopyWindow = App.ServiceProvider.GetRequiredService<BookCopyView>();
-            bookCopyWindow.Show();
+            var factory = App.ServiceProvider.GetRequiredService<IBookCopyViewModelFactory>();
+            var viewModel = factory.Create(book);
+
+            var view = App.ServiceProvider.GetRequiredService<BookCopyView>();
+            view.DataContext = viewModel;
+            view.ShowDialog();
         }
     }
 }

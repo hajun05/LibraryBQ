@@ -20,10 +20,9 @@ namespace LibraryBQ.View
     /// </summary>
     public partial class BookCopyView : Window
     {
-        public BookCopyView(BookCopyViewModel viewModel)
+        public BookCopyView()
         {
             InitializeComponent();
-            DataContext = viewModel;
         }
     }
 }

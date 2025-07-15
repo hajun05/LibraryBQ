@@ -14,7 +14,11 @@ namespace LibraryBQ.ViewModel
     {
         // 필드 및 프로퍼티
         private Book _book;
-
+        public Book Book
+        {
+            get { return _book; }
+            set => SetProperty(ref _book, value);
+        }
 
         // 생성자 --------------------------------------------------------------------
         public BookCopyViewModel(Book selectedBook)
