@@ -18,17 +18,18 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Grid.Row="0" Grid.Column="0" Margin="10" Orientation="Vertical">
-            <TextBlock x:Name="QueriedBookTitle" d:Text="제목" Text="{Binding Book.Title}" Margin="0,3" FontSize="18" FontWeight="SemiBold" Foreground="DarkBlue" VerticalAlignment="Center"/>
-            <TextBlock x:Name="QueriedBookAuthor" d:Text="저자" Text="{Binding Book.Author}" Margin="0,1" FontSize="15" VerticalAlignment="Center"/>
-            <TextBlock x:Name="QueriedBookNum" d:Text="도서번호" Text="{Binding Book.Id}" Margin="0,1" FontSize="15" VerticalAlignment="Center"/>
-            <Button x:Name="Loanbtn" Content="대출" Margin="0, 10, 150, -10" FontSize="15" Foreground="White" Background="DarkBlue"/>
+            <TextBlock x:Name="QueriedBookTitle" d:Text="제목" Text="{Binding SelectedBook.Title}" Margin="0,3" FontSize="18" FontWeight="SemiBold" Foreground="DarkBlue" VerticalAlignment="Center"/>
+            <TextBlock x:Name="QueriedBookAuthor" d:Text="저자" Text="{Binding SelectedBook.Author}" Margin="0,1" FontSize="15" VerticalAlignment="Center"/>
+            <TextBlock x:Name="QueriedBookNum" d:Text="도서번호" Text="{Binding SelectedBook.Id}" Margin="0,1" FontSize="15" VerticalAlignment="Center"/>
+            <Button x:Name="Loanbtn" Content="대출/예약" Margin="0, 10, 120, -10" FontSize="15" Foreground="White" Background="DarkBlue"/>
         </StackPanel>
 
         <StackPanel Grid.Row="0" Grid.Column="1" Margin="10" Orientation="Vertical">
             <Image HorizontalAlignment="Left" Source="/Image/cover.jpg" Height="110" Width="auto"/>
         </StackPanel>
 
-        <DataGrid x:Name="gridBookCopy" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" AutoGenerateColumns="False" IsReadOnly="False" SelectionMode="Single" FontSize="12">
+        <DataGrid x:Name="gridBookCopy" ItemsSource="{Binding BookCopies, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
+                  AutoGenerateColumns="False" IsReadOnly="False" SelectionMode="Single" FontSize="12">
             <DataGrid.ColumnHeaderStyle>
                 <Style TargetType="DataGridColumnHeader">
                     <Setter Property="Foreground" Value="Gray"/>
@@ -37,11 +38,10 @@
                 </Style>
             </DataGrid.ColumnHeaderStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Id" Binding="{Binding}" Width="*" Visibility="Hidden"/>
-                <DataGridTextColumn Header="등록번호" Binding="{Binding}" Width="*"/>
-                <DataGridTextColumn Header="도서상태" Binding="{Binding}" Width="*"/>
-                <DataGridTextColumn Header="반납예정일" Binding="{Binding}" Width="*"/>
-                <DataGridTextColumn Header="대출/예약" Binding="{Binding}" Width="*"/>
+                <DataGridTextColumn Header="Id" Binding="{Binding BookId}" Width="*" Visibility="Hidden"/>
+                <DataGridTextColumn Header="등록번호" Binding="{Binding ClassificationNumber}" Width="2*"/>
+                <DataGridTextColumn Header="도서상태" Binding="{Binding CurrentStatusName}" Width="2*"/>
+                <DataGridTextColumn Header="반납예정일" Binding="{Binding CurrentLoanDueDate, StringFormat={}{0:yyyy-MM-dd}}" Width="3*"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
