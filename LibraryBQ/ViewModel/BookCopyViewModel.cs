@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace LibraryBQ.ViewModel
 {
@@ -17,6 +18,8 @@ namespace LibraryBQ.ViewModel
         // 필드 및 프로퍼티 -----------------------------------------------------------
         private Book _selectedBook;
         private ObservableCollection<BookCopyDetail> _bookCopies;
+        private BookCopyDetail _selectedBookCopy;
+        private LoginUserAccountStore _loginUserAccountStore;
         public Book SelectedBook
         {
             get { return _selectedBook; }
@@ -27,18 +30,30 @@ namespace LibraryBQ.ViewModel
             get { return _bookCopies; }
             set => SetProperty(ref _bookCopies, value);
         }
+        public BookCopyDetail SelectedBookCopy
+        {
+            get { return _selectedBookCopy; }
+            set => SetProperty(ref _selectedBookCopy, value);
+        }
+        public LoginUserAccountStore LoginUserAccountStore
+        {
+            get => _loginUserAccountStore;
+            set => SetProperty(ref _loginUserAccountStore, value);
+        }
 
         // 생성자 --------------------------------------------------------------------
         public BookCopyViewModel(Book selectedBook)
         {
             _selectedBook = selectedBook;
             _bookCopies = new ObservableCollection<BookCopyDetail>();
+            _loginUserAccountStore = LoginUserAccountStore.Instance();
             BookCopiesQuery();
         }
 
         // 메소드 --------------------------------------------------------------------
         private void BookCopiesQuery()
         {
+            _bookCopies.Clear();
             using (LibraryBQContext db = new LibraryBQContext())
             {
                 List<BookCopyDetail> queriedBookCopies = new List<BookCopyDetail>();
@@ -58,6 +73,54 @@ namespace LibraryBQ.ViewModel
 
                 foreach(BookCopyDetail bookCopy in queriedBookCopies)
                     _bookCopies.Add(bookCopy);
+            }
+        }
+
+        // 커멘드 ---------------------------------------------------------------------
+        [RelayCommand] private void LoanbtnClick()
+        {
+            if (_selectedBookCopy == null)
+            {
+                MessageBox.Show("대출 혹은 예약하실 도서를 선택하십시오.");
+            }
+            else
+            {
+                using (LibraryBQContext db = new LibraryBQContext())
+                {
+                    if (_selectedBookCopy.CurrentLoanStatusId == 1)
+                    {
+                        BookCopy loanBookCopy = db.BookCopies.FirstOrDefault(x => x.Id == _selectedBookCopy.BookCopyId);
+                        loanBookCopy.LoanStatusId = 2;
+                        LoanHistory loanHistory = new LoanHistory();
+                        loanHistory.BookCopyId = _selectedBookCopy.BookCopyId;
+                        loanHistory.UserId = _loginUserAccountStore.CurrentLoginUserAccount.Id;
+                        loanHistory.LoanDate = DateOnly.FromDateTime((DateTime)DateTime.Now);
+                        loanHistory.LoanDueDate = DateOnly.FromDateTime((DateTime)DateTime.Now.AddDays(14));
+                        loanHistory.ExtensionCount = 0;
+                        db.LoanHistories.Add(loanHistory);
+                        db.SaveChanges();
+
+                        MessageBox.Show($"대출되었습니다.\r\n반납일은 {loanHistory.LoanDueDate}일 입니다.");
+                        BookCopiesQuery();
+                    }
+                    else if (_selectedBookCopy.CurrentLoanStatusId == 2)
+                    {
+                        if (_selectedBookCopy.CurrentLoanUserId == _loginUserAccountStore.CurrentLoginUserAccount.Id)
+                        {
+                            MessageBox.Show("이미 대출하신 도서입니다.");
+                        }
+                        else
+                        {
+
+                        }
+                    }
+                    else
+                    {
+
+                    }
+                }
+
+                
             }
         }
     }

@@ -47,11 +47,11 @@ namespace LibraryBQ
             services.AddTransient<LoginViewModel>();
             services.AddTransient<BookCopyViewModel>();
 
-            services.AddSingleton<MainWindow>();
+            services.AddTransient<MainWindow>();
             services.AddSingleton<HomeView>();
             services.AddSingleton<BookQueryView>();
             services.AddSingleton<LoginView>();
-            services.AddSingleton<BookCopyView>();
+            services.AddTransient<BookCopyView>();
 
             // DI 컨테이너 초기화
             ServiceProvider = services.BuildServiceProvider();
