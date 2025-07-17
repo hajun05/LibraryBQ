@@ -18,6 +18,7 @@ namespace LibraryBQ.ViewModel
         private HomeViewModel _homeViewModel;
         private BookQueryViewModel _bookQueryViewModel;
         private LoginViewModel _loginViewModel;
+        private HistoryViewModel _historyViewModel;
         private LoginUserAccountStore _loginUserAccountStore;
 
         public ObservableObject CurrentViewModel
@@ -32,11 +33,12 @@ namespace LibraryBQ.ViewModel
         }
 
         // 생성자 ----------------------------------------------
-        public MainWindowViewModel(HomeViewModel homeViewModel, BookQueryViewModel bookQueryViewModel, LoginViewModel loginViewModel)
+        public MainWindowViewModel(HomeViewModel homeViewModel, BookQueryViewModel bookQueryViewModel, LoginViewModel loginViewModel, HistoryViewModel historyViewModel)
         {
             _homeViewModel = homeViewModel;
             _bookQueryViewModel = bookQueryViewModel;
             _loginViewModel = loginViewModel;
+            _historyViewModel = historyViewModel;
             _loginUserAccountStore = LoginUserAccountStore.Instance();
 
             // 각 하위 ViewModel에서 상위 ViewModel의 상태 변경을 수행할 대리자 초기화
@@ -45,7 +47,15 @@ namespace LibraryBQ.ViewModel
                 _bookQueryViewModel.InputQueryStr = _homeViewModel.InputQueryStr;
                 CurrentViewModel = _bookQueryViewModel;
             };
-            _loginViewModel.LoginEndAction = () => CurrentViewModel = _homeViewModel;
+            _loginViewModel.LoginEndAction = (bool IsLoginByHistory) =>
+            {
+                if (IsLoginByHistory)
+                {
+                    CurrentViewModel = _historyViewModel;
+                }
+                else
+                    CurrentViewModel = _homeViewModel;
+            };
 
             // 초기화면
             CurrentViewModel = _homeViewModel;
@@ -73,8 +83,8 @@ namespace LibraryBQ.ViewModel
             {
                 if (CurrentViewModel != _loginViewModel)
                 {
-                    _loginViewModel.InputUserNo = string.Empty;
-                    _loginViewModel.InputPassword = string.Empty;
+                    _loginViewModel.LoginClear();
+                    _loginViewModel.isLoginByHistory = false;
                     CurrentViewModel = _loginViewModel;
                 }
             }
@@ -86,5 +96,29 @@ namespace LibraryBQ.ViewModel
                 }
             }
         }
+
+        [RelayCommand] private async void MyHistorybtnClick() // 이력조회버튼 클릭 커멘드
+        {
+            if (!_loginUserAccountStore.IsLogin)
+            {
+                if (MessageBox.Show("로그인이 필요합니다.\r\n로그인하시겠습니까?", "", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    if (CurrentViewModel != _loginViewModel)
+                    {
+                        _loginViewModel.LoginClear();
+                        _loginViewModel.isLoginByHistory = true;
+                        CurrentViewModel = _loginViewModel;
+                    }
+                }
+            }
+            else
+            {
+                if (CurrentViewModel != _historyViewModel)
+                    CurrentViewModel = _historyViewModel;
+            }
+        }
+
+        // 메소드 ----------------------------------------------
+
     }
 }

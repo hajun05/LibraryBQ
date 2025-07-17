@@ -34,9 +34,10 @@ namespace LibraryBQ.ViewModel
             get => _inputPassword;
             set => SetProperty(ref _inputPassword, value);
         }
+        public bool isLoginByHistory { get; set; }
 
         // 대리자 객체 ------------------------------------------------
-        public Action LoginEndAction { get; set; }
+        public Action<bool> LoginEndAction { get; set; }
 
         // 커멘드 -----------------------------------------------------
         [RelayCommand] private void LoginbtnClick()
@@ -59,10 +60,17 @@ namespace LibraryBQ.ViewModel
                     {
                         AccountStore = LoginUserAccountStore.Instance(LoginUser);
                         MessageBox.Show($"로그인되었습니다.\r\n환영합니다 {AccountStore.CurrentLoginUserAccount.Name}님.");
-                        LoginEndAction.Invoke();
+                        LoginEndAction.Invoke(isLoginByHistory);
                     }
                 }
             }
+        }
+
+        // 메소드 -----------------------------------------------------
+        public void LoginClear()
+        {
+            _inputUserNo = string.Empty;
+            _inputPassword = string.Empty;
         }
     }
 }

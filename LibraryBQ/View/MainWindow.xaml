@@ -22,6 +22,9 @@
         <DataTemplate x:Name="LoginTemplate" DataType="{x:Type viewmodels:LoginViewModel}">
             <views:LoginView/>
         </DataTemplate>
+        <DataTemplate x:Name="HistoryTemplate" DataType="{x:Type viewmodels:HistoryViewModel}">
+            <views:HistoryView/>
+        </DataTemplate>
 
         <!--Bool 프로퍼티를 Visibility에 바인딩하기 위한 변환기-->
         <!--코드 맨 아래쪽에 선언하니 Converter를 인식하지 못하던 문제가 리소스를 코드 위에서 선언하니 해결. StaticResource는 맨 위에서 선언 권장-->
@@ -114,13 +117,13 @@
                         </Rectangle>
                     </Grid>
                 </Button>
-                <Button x:Name="MyHistorybtn" Grid.Column="2" Background="Transparent" BorderBrush="Transparent">
+                <Button x:Name="MyHistorybtn" Grid.Column="2" Background="Transparent" BorderBrush="Transparent" Command="{Binding MyHistorybtnClickCommand}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="3*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="이용현황 " FontSize="18" FontWeight="SemiBold" Foreground="DarkBlue" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="0" Text="이용이력 " FontSize="18" FontWeight="SemiBold" Foreground="DarkBlue" VerticalAlignment="Center"/>
                         <Image Grid.Column="1" Source="/Image/Login_History.png"/>
                         <!--이미지 소스에 색상 입히기용 직사각형 컨트롤, 추후 스타일로 등록하고 원하는 색상과 이미지 소스를 고를 수 있도록 개선해보기-->
                         <Rectangle Grid.Column="1" Stroke="Transparent" Fill="DarkBlue">

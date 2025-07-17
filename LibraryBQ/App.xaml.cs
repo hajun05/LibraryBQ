@@ -45,13 +45,15 @@ namespace LibraryBQ
             services.AddTransient<HomeViewModel>();
             services.AddTransient<BookQueryViewModel>();
             services.AddTransient<LoginViewModel>();
+            services.AddTransient<HistoryViewModel>();
             services.AddTransient<BookCopyViewModel>();
 
             services.AddTransient<MainWindow>();
             services.AddSingleton<HomeView>();
             services.AddSingleton<BookQueryView>();
-            services.AddSingleton<LoginView>();
-            services.AddTransient<BookCopyView>();
+            services.AddTransient<LoginView>();
+            services.AddSingleton<HistoryView>();
+            services.AddTransient<BookCopyView>(); // UserControl이 아닌 Window는 Transient 등록 권장
 
             // DI 컨테이너 초기화
             ServiceProvider = services.BuildServiceProvider();
