@@ -19,7 +19,7 @@ namespace LibraryBQ.ViewModel
         private Book _selectedBook;
         private ObservableCollection<BookCopyDetail> _bookCopies;
         private BookCopyDetail _selectedBookCopy;
-        private LoginUserAccountStore _loginUserAccountStore;
+        private LoginUserAccountStore _loginUserAccount;
         public Book SelectedBook
         {
             get { return _selectedBook; }
@@ -35,10 +35,10 @@ namespace LibraryBQ.ViewModel
             get { return _selectedBookCopy; }
             set => SetProperty(ref _selectedBookCopy, value);
         }
-        public LoginUserAccountStore LoginUserAccountStore
+        public LoginUserAccountStore LoginUserAccount
         {
-            get => _loginUserAccountStore;
-            set => SetProperty(ref _loginUserAccountStore, value);
+            get => _loginUserAccount;
+            set => SetProperty(ref _loginUserAccount, value);
         }
 
         // 생성자 --------------------------------------------------------------------
@@ -46,7 +46,7 @@ namespace LibraryBQ.ViewModel
         {
             _selectedBook = selectedBook;
             _bookCopies = new ObservableCollection<BookCopyDetail>();
-            _loginUserAccountStore = LoginUserAccountStore.Instance();
+            _loginUserAccount = LoginUserAccountStore.Instance();
             BookCopiesQuery();
         }
 
@@ -93,7 +93,7 @@ namespace LibraryBQ.ViewModel
                         loanBookCopy.LoanStatusId = 2;
                         LoanHistory loanHistory = new LoanHistory();
                         loanHistory.BookCopyId = _selectedBookCopy.BookCopyId;
-                        loanHistory.UserId = _loginUserAccountStore.CurrentLoginUserAccount.Id;
+                        loanHistory.UserId = _loginUserAccount.CurrentLoginUserAccount.Id;
                         loanHistory.LoanDate = DateOnly.FromDateTime((DateTime)DateTime.Now);
                         loanHistory.LoanDueDate = DateOnly.FromDateTime((DateTime)DateTime.Now.AddDays(14));
                         loanHistory.ExtensionCount = 0;
@@ -105,13 +105,13 @@ namespace LibraryBQ.ViewModel
                     }
                     else if (_selectedBookCopy.CurrentLoanStatusId == 2)
                     {
-                        if (_selectedBookCopy.CurrentLoanUserId == _loginUserAccountStore.CurrentLoginUserAccount.Id)
+                        if (_selectedBookCopy.CurrentLoanUserId == _loginUserAccount.CurrentLoginUserAccount.Id)
                         {
                             MessageBox.Show("이미 대출하신 도서입니다.");
                         }
-                        else
+                        else if (MessageBox.Show("이미 대출된 도서입니다.\r\n예약하시겠습니까?", "", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                         {
-
+                            
                         }
                     }
                     else
