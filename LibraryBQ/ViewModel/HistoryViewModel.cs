@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace LibraryBQ.ViewModel
 {
@@ -44,6 +45,28 @@ namespace LibraryBQ.ViewModel
         }
 
         // 커멘드 ------------------------------------------------------
+        [RelayCommand] private void ReturnbtnClick(CurrentLoanHistoryDetail selectedLoanHistory)
+        {
+            if (selectedLoanHistory != null)
+            {
+                using (LibraryBQContext db = new LibraryBQContext())
+                { 
+                    LoanHistory returnLoan = db.LoanHistories.FirstOrDefault(x => x.Id == selectedLoanHistory.CurrentLoanHistoryId);
+                    returnLoan.ReturnDate = DateOnly.FromDateTime(DateTime.Now);
+
+                    BookCopy returnBookCopy = db.BookCopies.FirstOrDefault(x => x.Id == selectedLoanHistory.BookCopyId);
+                    returnBookCopy.LoanStatusId = 1;
+
+                    CurrentLoanHistories.Remove(selectedLoanHistory);
+                    db.SaveChanges();
+                    MessageBox.Show("반납이 완료되었습니다.");
+                }
+            }
+            else
+            {
+                MessageBox.Show("반납할 도서를 선택해 주십시오.");
+            }
+        }
 
         // 메소드 ------------------------------------------------------
         public void LoanHistoriesQuery()

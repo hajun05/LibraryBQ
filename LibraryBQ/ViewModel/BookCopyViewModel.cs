@@ -56,9 +56,9 @@ namespace LibraryBQ.ViewModel
             _bookCopies.Clear();
             using (LibraryBQContext db = new LibraryBQContext())
             {
-                List<BookCopyDetail> queriedBookCopies = new List<BookCopyDetail>();
-                queriedBookCopies = db.BookCopies.Include(x => x.Book).Include(x => x.LoanStatus)
-                    .Include(x => x.LoanHistories).Where(x => x.BookId == SelectedBook.Id)
+                List<BookCopyDetail> queriedBookCopies = db.BookCopies
+                    .Include(x => x.Book).Include(x => x.LoanStatus).Include(x => x.LoanHistories)
+                    .Where(x => x.BookId == SelectedBook.Id)
                     .Select(x => new BookCopyDetail()
                     {
                         BookCopyId = x.Id,

@@ -15,7 +15,8 @@
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0" Text="대출 이력" FontSize="18" FontWeight="SemiBold" Foreground="DarkBlue" VerticalAlignment="Center"/>
-        <Button Grid.Row="0" Margin="90,5,450,5" Content="반납" FontSize="15" FontWeight="SemiBold" Foreground="White" Background="DarkBlue"/>
+        <Button x:Name="Returnbtn" Grid.Row="0" Margin="90,5,450,5" Content="반납" FontSize="15" FontWeight="SemiBold" Foreground="White" Background="DarkBlue"
+                Command="{Binding ReturnbtnClickCommand}" CommandParameter="{Binding SelectedItem, ElementName=gridLoan}"/>
         <DataGrid x:Name="gridLoan" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" FontSize="12"
                   ItemsSource="{Binding CurrentLoanHistories}">
             <DataGrid.ColumnHeaderStyle>
