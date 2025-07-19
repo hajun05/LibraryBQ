@@ -87,6 +87,23 @@ namespace LibraryBQ.ViewModel
             {
                 using (LibraryBQContext db = new LibraryBQContext())
                 {
+                    List<LoanHistory> CurrentLoans = db.LoanHistories
+                        .Where(x => x.UserId == _loginUserAccount.CurrentLoginUserAccount.Id && x.ReturnDate == null).ToList();
+
+                    foreach (LoanHistory loan in CurrentLoans)
+                    {
+                        if (loan.LoanDueDate < DateOnly.FromDateTime(DateTime.Now))
+                        {
+                            MessageBox.Show("연체된 도서가 있습니다.\r\n연체된 모든 도서를 반납하셔야 대출 가능합니다.");
+                            return;
+                        }
+                        else if (loan.BookCopy.BookId == _selectedBookCopy.BookId)
+                        {
+                            MessageBox.Show("이미 대출하신 도서입니다.");
+                            return;
+                        }
+                    }
+
                     if (_selectedBookCopy.CurrentLoanStatusId == 1)
                     {
                         BookCopy loanBookCopy = db.BookCopies.FirstOrDefault(x => x.Id == _selectedBookCopy.BookCopyId);
@@ -105,11 +122,7 @@ namespace LibraryBQ.ViewModel
                     }
                     else if (_selectedBookCopy.CurrentLoanStatusId == 2)
                     {
-                        if (_selectedBookCopy.CurrentLoanUserId == _loginUserAccount.CurrentLoginUserAccount.Id)
-                        {
-                            MessageBox.Show("이미 대출하신 도서입니다.");
-                        }
-                        else if (MessageBox.Show("이미 대출된 도서입니다.\r\n예약하시겠습니까?", "안내", MessageBoxButton.YesNoCancel) == MessageBoxResult.Yes)
+                        if (MessageBox.Show("이미 대출된 도서입니다.\r\n예약하시겠습니까?", "안내", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                         {
                             
                         }
