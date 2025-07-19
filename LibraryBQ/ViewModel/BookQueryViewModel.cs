@@ -73,5 +73,12 @@ namespace LibraryBQ.ViewModel
             if (_selectedBook != null)
                 _iWindowService.ShowBookCopyWindow(_selectedBook);
         }
+
+        // 메소드 --------------------------------------------------------------------
+        public void BookQueryClear()
+        {
+            _inputQueryStr = string.Empty;
+            _queriedBooks.Clear();
+        }
     }
 }

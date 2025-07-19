@@ -75,7 +75,10 @@ namespace LibraryBQ.ViewModel
         [RelayCommand] private void BookbtnClick() // 도서조회버튼 클릭 커멘드
         {
             if (CurrentViewModel != _bookQueryViewModel)
+            {
+                _bookQueryViewModel.BookQueryClear();
                 CurrentViewModel = _bookQueryViewModel;
+            }
         }
 
         [RelayCommand] private void LoginbtnClick() // 로그인버튼 클릭 커멘드
@@ -91,7 +94,7 @@ namespace LibraryBQ.ViewModel
             }
             else
             {
-                if (MessageBox.Show("로그아웃하시겠습니까?", "안내", MessageBoxButton.YesNoCancel) == MessageBoxResult.Yes)
+                if (MessageBox.Show("로그아웃하시겠습니까?", "안내", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
                     LoginUserAccountStore.DetachLoginUserAccount();
                     if (CurrentViewModel == _historyViewModel)
@@ -107,7 +110,7 @@ namespace LibraryBQ.ViewModel
         {
             if (!_loginUserAccountStore.IsLogin)
             {
-                if (MessageBox.Show("로그인이 필요합니다.\r\n로그인하시겠습니까?", "안내", MessageBoxButton.YesNoCancel) == MessageBoxResult.Yes)
+                if (MessageBox.Show("로그인이 필요합니다.\r\n로그인하시겠습니까?", "안내", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
                     if (CurrentViewModel != _loginViewModel)
                     {
