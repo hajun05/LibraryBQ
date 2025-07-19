@@ -109,7 +109,7 @@ namespace LibraryBQ.ViewModel
                         {
                             MessageBox.Show("이미 대출하신 도서입니다.");
                         }
-                        else if (MessageBox.Show("이미 대출된 도서입니다.\r\n예약하시겠습니까?", "", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                        else if (MessageBox.Show("이미 대출된 도서입니다.\r\n예약하시겠습니까?", "안내", MessageBoxButton.YesNoCancel) == MessageBoxResult.Yes)
                         {
                             
                         }

@@ -51,6 +51,7 @@ namespace LibraryBQ.ViewModel
             {
                 if (IsLoginByHistory)
                 {
+                    _historyViewModel.LoanHistoriesQuery();
                     CurrentViewModel = _historyViewModel;
                 }
                 else
@@ -90,9 +91,14 @@ namespace LibraryBQ.ViewModel
             }
             else
             {
-                if (MessageBox.Show("로그아웃하시겠습니까?", "", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                if (MessageBox.Show("로그아웃하시겠습니까?", "안내", MessageBoxButton.YesNoCancel) == MessageBoxResult.Yes)
                 {
                     LoginUserAccountStore.DetachLoginUserAccount();
+                    if (CurrentViewModel == _historyViewModel)
+                    {
+                        _historyViewModel.HistoryClear();
+                        CurrentViewModel = _homeViewModel;
+                    }
                 }
             }
         }
@@ -101,7 +107,7 @@ namespace LibraryBQ.ViewModel
         {
             if (!_loginUserAccountStore.IsLogin)
             {
-                if (MessageBox.Show("로그인이 필요합니다.\r\n로그인하시겠습니까?", "", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                if (MessageBox.Show("로그인이 필요합니다.\r\n로그인하시겠습니까?", "안내", MessageBoxButton.YesNoCancel) == MessageBoxResult.Yes)
                 {
                     if (CurrentViewModel != _loginViewModel)
                     {
@@ -114,7 +120,10 @@ namespace LibraryBQ.ViewModel
             else
             {
                 if (CurrentViewModel != _historyViewModel)
+                {
+                    _historyViewModel.LoanHistoriesQuery();
                     CurrentViewModel = _historyViewModel;
+                }
             }
         }
 

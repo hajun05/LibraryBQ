@@ -35,7 +35,7 @@
         </StackPanel>
 
         <DataGrid x:Name="gridBookCopy" ItemsSource="{Binding BookCopies, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedBookCopy}"
-                  Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" AutoGenerateColumns="False" IsReadOnly="False" SelectionMode="Single" FontSize="12">
+                  Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" FontSize="12">
             <DataGrid.ColumnHeaderStyle>
                 <Style TargetType="DataGridColumnHeader">
                     <Setter Property="Foreground" Value="Gray"/>
