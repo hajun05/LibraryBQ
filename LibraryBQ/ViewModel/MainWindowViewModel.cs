@@ -123,6 +123,7 @@ namespace LibraryBQ.ViewModel
                 if (CurrentViewModel != _historyViewModel)
                 {
                     _historyViewModel.LoanHistoriesQuery();
+                    _historyViewModel.ReservationHistoriesQuery();
                     CurrentViewModel = _historyViewModel;
                 }
             }

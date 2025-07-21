@@ -17,7 +17,7 @@ namespace LibraryBQ.ViewModel
     {
         // 필드 및 프로퍼티 ---------------------------------------------
         private ObservableCollection<CurrentLoanHistoryDetail> _currentLoanHistories;
-        private ObservableCollection<ReservationHistory> _currentReservationHistories;
+        private ObservableCollection<CurrentReservationHistoryDetail> _currentReservationHistories;
         private LoginUserAccountStore _loginUserAccount;
 
         public ObservableCollection<CurrentLoanHistoryDetail> CurrentLoanHistories
@@ -25,7 +25,7 @@ namespace LibraryBQ.ViewModel
             get { return _currentLoanHistories; }
             set => SetProperty(ref _currentLoanHistories, value);
         }
-        public ObservableCollection<ReservationHistory> CurrentReservationHistories
+        public ObservableCollection<CurrentReservationHistoryDetail> CurrentReservationHistories
         {
             get { return _currentReservationHistories; }
             set => SetProperty(ref _currentReservationHistories, value);
@@ -41,7 +41,7 @@ namespace LibraryBQ.ViewModel
         {
             _loginUserAccount = LoginUserAccountStore.Instance();
             CurrentLoanHistories = new ObservableCollection<CurrentLoanHistoryDetail>();
-            CurrentReservationHistories = new ObservableCollection<ReservationHistory>();
+            CurrentReservationHistories = new ObservableCollection<CurrentReservationHistoryDetail>();
         }
 
         // 커멘드 ------------------------------------------------------
@@ -56,6 +56,8 @@ namespace LibraryBQ.ViewModel
 
                     BookCopy returnBookCopy = db.BookCopies.FirstOrDefault(x => x.Id == selectedLoanHistory.BookCopyId);
                     returnBookCopy.LoanStatusId = 1;
+
+
 
                     CurrentLoanHistories.Remove(selectedLoanHistory);
                     db.SaveChanges();
@@ -93,6 +95,34 @@ namespace LibraryBQ.ViewModel
                 foreach (CurrentLoanHistoryDetail answerItem in answer)
                 {
                     CurrentLoanHistories.Add(answerItem);
+                }
+            }
+        }
+
+        public void ReservationHistoriesQuery()
+        {
+            using (LibraryBQContext db = new LibraryBQContext())
+            {
+                List<CurrentReservationHistoryDetail> answer = db.ReservationHistories
+                    .Include(x => x.BookCopy).ThenInclude(x => x.Book)
+                    .Where(x => x.UserId == _loginUserAccount.CurrentLoginUserAccount.Id)
+                    .Select(x => new CurrentReservationHistoryDetail()
+                    {
+                        BookCopyId = x.BookCopyId,
+                        BookId = x.BookCopy.BookId,
+                        Title = x.BookCopy.Book.Title,
+                        Author = x.BookCopy.Book.Author,
+                        ClassificationNumber = String.Format($"{x.BookCopy.BookId}-{x.BookCopy.Id}"),
+                        CurrentReservationHistoryId = x.Id,
+                        CurrentLoanStatusId = x.BookCopy.LoanStatusId,
+                        CurrentReservationDueDate = x.ReservationDueDate,
+                        CurrentReservationUserId = x.UserId,
+                    }).ToList();
+
+                CurrentLoanHistories.Clear();
+                foreach (CurrentReservationHistoryDetail answerItem in answer)
+                {
+                    CurrentReservationHistories.Add(answerItem);
                 }
             }
         }
