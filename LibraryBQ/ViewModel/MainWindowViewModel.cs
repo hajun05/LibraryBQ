@@ -2,11 +2,6 @@
 using CommunityToolkit.Mvvm.Input;
 using LibraryBQ.Model;
 using LibraryBQ.Service;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace LibraryBQ.ViewModel
@@ -57,6 +52,9 @@ namespace LibraryBQ.ViewModel
                 else
                     CurrentViewModel = _homeViewModel;
             };
+
+            // 만료된 예약목록 처리
+            ExpirationReservation();
 
             // 초기화면
             CurrentViewModel = _homeViewModel;
@@ -131,6 +129,35 @@ namespace LibraryBQ.ViewModel
         }
 
         // 메소드 ----------------------------------------------
+        private void ExpirationReservation()
+        {
+            DateOnly today = DateOnly.FromDateTime(DateTime.Today);
 
+            using (LibraryBQContext db = new LibraryBQContext())
+            {
+                // 만료할 예약 목록 추출
+                List<ReservationHistory> expiredReservations = db.ReservationHistories.Where(x => x.ReservationDueDate < today).ToList();
+
+                if (expiredReservations.Count > 0)
+                {
+                    // 만료할 예약의 도서 번호와 예약 우선순위 추출
+                    var associatedReservations = expiredReservations.Select(x => new { x.BookCopyId, x.Priority }).ToList();
+
+                    // 만료할 에약 목록 삭제
+                    db.ReservationHistories.RemoveRange(expiredReservations);
+
+                    // 만료한 예약과 같은 도서를 예약한 이력들의 예약 우선순위 조정
+                    foreach (var reservation in associatedReservations)
+                    {
+                        var targets = db.ReservationHistories.Where(x => x.BookCopyId == reservation.BookCopyId && x.Priority > reservation.Priority);
+
+                        foreach (var t in targets)
+                            t.Priority -= 1;
+                    }
+
+                    db.SaveChanges();
+                }
+            }
+        }
     }
 }
