@@ -55,10 +55,22 @@ namespace LibraryBQ.ViewModel
                     returnLoan.ReturnDate = DateOnly.FromDateTime(DateTime.Now);
 
                     BookCopy returnBookCopy = db.BookCopies.FirstOrDefault(x => x.Id == selectedLoanHistory.BookCopyId);
-                    returnBookCopy.LoanStatusId = 1;
+                    
 
-
-
+                    List<ReservationHistory> reservationHistories = db.ReservationHistories
+                        .Where(x => x.BookCopyId == selectedLoanHistory.BookCopyId).OrderBy(x => x.Priority).ToList();
+                    if (reservationHistories.Count > 0)
+                    {
+                        for (int i = 0; i < reservationHistories.Count; i++)
+                        {
+                            reservationHistories[i].ReservationDueDate = DateOnly.FromDateTime(DateTime.Now).AddDays(i * 3);
+                        }
+                        returnBookCopy.LoanStatusId = 3;
+                    }
+                    else
+                    {
+                        returnBookCopy.LoanStatusId = 1;
+                    }
                     CurrentLoanHistories.Remove(selectedLoanHistory);
                     db.SaveChanges();
                     MessageBox.Show("반납이 완료되었습니다.");
@@ -119,7 +131,7 @@ namespace LibraryBQ.ViewModel
                         CurrentReservationUserId = x.UserId,
                     }).ToList();
 
-                CurrentLoanHistories.Clear();
+                CurrentReservationHistories.Clear();
                 foreach (CurrentReservationHistoryDetail answerItem in answer)
                 {
                     CurrentReservationHistories.Add(answerItem);
