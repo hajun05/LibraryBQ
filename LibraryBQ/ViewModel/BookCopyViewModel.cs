@@ -124,12 +124,64 @@ namespace LibraryBQ.ViewModel
                     {
                         if (MessageBox.Show("이미 대출된 도서입니다.\r\n예약하시겠습니까?", "안내", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                         {
-                            
+                            var preReservations = db.ReservationHistories.Where(x => x.BookCopyId == _selectedBookCopy.BookCopyId)
+                                .Select(x => new { x.BookCopyId, x.Priority });
+
+                            if (preReservations.Count() > 0)
+                            {
+                                var lastReservation = preReservations.OrderByDescending(x => x.Priority).First();
+                                ReservationHistory reservationHistory = new ReservationHistory();
+                                reservationHistory.BookCopyId = _selectedBookCopy.BookCopyId;
+                                reservationHistory.UserId = _loginUserAccount.CurrentLoginUserAccount.Id;
+                                reservationHistory.ReservationDate = DateOnly.FromDateTime((DateTime)DateTime.Now);
+                                reservationHistory.ReservationDueDate = null;
+                                reservationHistory.Priority = (byte)(lastReservation.Priority + 1);
+                                db.ReservationHistories.Add(reservationHistory);
+                            }
+                            else
+                            {
+                                ReservationHistory reservationHistory = new ReservationHistory();
+                                reservationHistory.BookCopyId = _selectedBookCopy.BookCopyId;
+                                reservationHistory.UserId = _loginUserAccount.CurrentLoginUserAccount.Id;
+                                reservationHistory.ReservationDate = DateOnly.FromDateTime((DateTime)DateTime.Now);
+                                reservationHistory.ReservationDueDate = null;
+                                reservationHistory.Priority = 1;
+                                db.ReservationHistories.Add(reservationHistory);
+                            }
+                            db.SaveChanges();
                         }
                     }
                     else
                     {
+                        if (MessageBox.Show("이미 예약된 도서입니다.\r\n다음 순서로 예약하시겠습니까?", "안내", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                        {
+                            var preReservations = db.ReservationHistories.Where(x => x.BookCopyId == _selectedBookCopy.BookCopyId)
+                                .Select(x => new { x.BookCopyId, x.ReservationDueDate, x.Priority });
 
+                            if (preReservations.Count() > 0)
+                            {
+                                var lastReservation = preReservations.OrderByDescending(x => x.Priority).First();
+                                ReservationHistory reservationHistory = new ReservationHistory();
+                                reservationHistory.BookCopyId = _selectedBookCopy.BookCopyId;
+                                reservationHistory.UserId = _loginUserAccount.CurrentLoginUserAccount.Id;
+                                reservationHistory.ReservationDate = DateOnly.FromDateTime((DateTime)DateTime.Now);
+                                DateOnly lastReservationDueDate = (DateOnly)(lastReservation.ReservationDueDate);
+                                reservationHistory.ReservationDueDate = lastReservationDueDate.AddDays(3);
+                                reservationHistory.Priority = (byte)(lastReservation.Priority + 1);
+                                db.ReservationHistories.Add(reservationHistory);
+                            }
+                            else
+                            {
+                                ReservationHistory reservationHistory = new ReservationHistory();
+                                reservationHistory.BookCopyId = _selectedBookCopy.BookCopyId;
+                                reservationHistory.UserId = _loginUserAccount.CurrentLoginUserAccount.Id;
+                                reservationHistory.ReservationDate = DateOnly.FromDateTime((DateTime)DateTime.Now);
+                                reservationHistory.ReservationDueDate = reservationHistory.ReservationDate.AddDays(3);
+                                reservationHistory.Priority = 1;
+                                db.ReservationHistories.Add(reservationHistory);
+                            }
+                            db.SaveChanges();
+                        }
                     }
                 }
 
