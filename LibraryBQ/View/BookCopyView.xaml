@@ -46,8 +46,9 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Id" Binding="{Binding BookId}" Width="*" Visibility="Hidden"/>
                 <DataGridTextColumn Header="등록번호" Binding="{Binding ClassificationNumber}" Width="2*"/>
-                <DataGridTextColumn Header="도서상태" Binding="{Binding CurrentStatusName}" Width="2*"/>
-                <DataGridTextColumn Header="반납예정일" Binding="{Binding CurrentLoanDueDate, StringFormat={}{0:yyyy-MM-dd}}" Width="3*"/>
+                <DataGridTextColumn Header="도서상태" Binding="{Binding CurrentStatusName}" Width="1.2*"/>
+                <DataGridTextColumn Header="예약자수" Binding="{Binding CurrentReservations.Count}" Width="1.2*"/>
+                <DataGridTextColumn Header="반납예정일" Binding="{Binding CurrentLoanDueDate, StringFormat={}{0:yyyy-MM-dd}}" Width="2*"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
