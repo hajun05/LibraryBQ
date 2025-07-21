@@ -47,6 +47,7 @@ namespace LibraryBQ.ViewModel
                 if (IsLoginByHistory)
                 {
                     _historyViewModel.LoanHistoriesQuery();
+                    _historyViewModel.ReservationHistoriesQuery();
                     CurrentViewModel = _historyViewModel;
                 }
                 else

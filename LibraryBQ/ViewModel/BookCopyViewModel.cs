@@ -87,10 +87,11 @@ namespace LibraryBQ.ViewModel
             {
                 using (LibraryBQContext db = new LibraryBQContext())
                 {
-                    List<LoanHistory> CurrentLoans = db.LoanHistories
-                        .Where(x => x.UserId == _loginUserAccount.CurrentLoginUserAccount.Id && x.ReturnDate == null).ToList();
+                    var CurrentLoans = db.LoanHistories.Include(x => x.User)
+                        .Where(x => x.UserId == _loginUserAccount.CurrentLoginUserAccount.Id && x.ReturnDate == null)
+                        .Select(x => new { x.LoanDueDate, x.BookCopy }).ToList();
 
-                    foreach (LoanHistory loan in CurrentLoans)
+                    foreach (var loan in CurrentLoans)
                     {
                         if (loan.LoanDueDate < DateOnly.FromDateTime(DateTime.Now))
                         {
@@ -124,13 +125,20 @@ namespace LibraryBQ.ViewModel
                     {
                         if (MessageBox.Show("이미 대출된 도서입니다.\r\n예약하시겠습니까?", "안내", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                         {
+                            if (db.ReservationHistories.FirstOrDefault(x => x.UserId == _loginUserAccount.CurrentLoginUserAccount.Id) != null)
+                            {
+                                MessageBox.Show("이미 예약하신 도서입니다.");
+                                return;
+                            }
+
                             var preReservations = db.ReservationHistories.Where(x => x.BookCopyId == _selectedBookCopy.BookCopyId)
                                 .Select(x => new { x.BookCopyId, x.Priority });
 
+                            ReservationHistory reservationHistory = new ReservationHistory();
                             if (preReservations.Count() > 0)
                             {
                                 var lastReservation = preReservations.OrderByDescending(x => x.Priority).First();
-                                ReservationHistory reservationHistory = new ReservationHistory();
+                                
                                 reservationHistory.BookCopyId = _selectedBookCopy.BookCopyId;
                                 reservationHistory.UserId = _loginUserAccount.CurrentLoginUserAccount.Id;
                                 reservationHistory.ReservationDate = DateOnly.FromDateTime((DateTime)DateTime.Now);
@@ -140,7 +148,6 @@ namespace LibraryBQ.ViewModel
                             }
                             else
                             {
-                                ReservationHistory reservationHistory = new ReservationHistory();
                                 reservationHistory.BookCopyId = _selectedBookCopy.BookCopyId;
                                 reservationHistory.UserId = _loginUserAccount.CurrentLoginUserAccount.Id;
                                 reservationHistory.ReservationDate = DateOnly.FromDateTime((DateTime)DateTime.Now);
@@ -148,20 +155,31 @@ namespace LibraryBQ.ViewModel
                                 reservationHistory.Priority = 1;
                                 db.ReservationHistories.Add(reservationHistory);
                             }
+
                             db.SaveChanges();
+                            MessageBox.Show($"예약되었습니다.\r\n {reservationHistory.Priority}번째 순번입니다.");
+                            BookCopiesQuery();
                         }
                     }
                     else
                     {
                         if (MessageBox.Show("이미 예약된 도서입니다.\r\n다음 순서로 예약하시겠습니까?", "안내", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                         {
+                            if (db.ReservationHistories.FirstOrDefault(x => x.UserId == _loginUserAccount.CurrentLoginUserAccount.Id) != null)
+                            {
+                                MessageBox.Show("이미 예약하신 도서입니다.");
+                                return;
+                            }
+
                             var preReservations = db.ReservationHistories.Where(x => x.BookCopyId == _selectedBookCopy.BookCopyId)
                                 .Select(x => new { x.BookCopyId, x.ReservationDueDate, x.Priority });
+
+                            ReservationHistory reservationHistory = new ReservationHistory();
 
                             if (preReservations.Count() > 0)
                             {
                                 var lastReservation = preReservations.OrderByDescending(x => x.Priority).First();
-                                ReservationHistory reservationHistory = new ReservationHistory();
+                                
                                 reservationHistory.BookCopyId = _selectedBookCopy.BookCopyId;
                                 reservationHistory.UserId = _loginUserAccount.CurrentLoginUserAccount.Id;
                                 reservationHistory.ReservationDate = DateOnly.FromDateTime((DateTime)DateTime.Now);
@@ -172,7 +190,6 @@ namespace LibraryBQ.ViewModel
                             }
                             else
                             {
-                                ReservationHistory reservationHistory = new ReservationHistory();
                                 reservationHistory.BookCopyId = _selectedBookCopy.BookCopyId;
                                 reservationHistory.UserId = _loginUserAccount.CurrentLoginUserAccount.Id;
                                 reservationHistory.ReservationDate = DateOnly.FromDateTime((DateTime)DateTime.Now);
@@ -181,11 +198,11 @@ namespace LibraryBQ.ViewModel
                                 db.ReservationHistories.Add(reservationHistory);
                             }
                             db.SaveChanges();
+                            MessageBox.Show($"예약되었습니다.\r\n {reservationHistory.Priority}번째 순번입니다.");
+                            BookCopiesQuery();
                         }
                     }
                 }
-
-                
             }
         }
     }
