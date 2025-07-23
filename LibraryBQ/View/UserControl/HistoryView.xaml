@@ -39,8 +39,9 @@
         </DataGrid>
 
         <TextBlock Grid.Row="2" Text="예약 이력" FontSize="18" FontWeight="SemiBold" Foreground="DarkBlue" VerticalAlignment="Center"/>
-        <Button Grid.Row="2" Margin="90,5,450,5" Content="취소" FontSize="15" FontWeight="SemiBold" Foreground="White" Background="DarkBlue"/>
-        <DataGrid x:Name="gridReserve" Grid.Row="3" AutoGenerateColumns="False" IsReadOnly="False" SelectionMode="Single" FontSize="12">
+        <Button x:Name="Cancelbtn" Grid.Row="2" Margin="90,5,450,5" Content="취소" FontSize="15" FontWeight="SemiBold" Foreground="White" Background="DarkBlue"/>
+        <DataGrid x:Name="gridReserve" Grid.Row="3" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" FontSize="12"
+                  ItemsSource="{Binding CurrentReservationHistories}">
             <DataGrid.ColumnHeaderStyle>
                 <Style TargetType="DataGridColumnHeader">
                     <Setter Property="Foreground" Value="Gray"/>
@@ -49,15 +50,15 @@
                 </Style>
             </DataGrid.ColumnHeaderStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="BookId" Binding="{Binding}" Width="*" Visibility="Hidden"/>
-                <DataGridTextColumn Header="BookCopyId" Binding="{Binding}" Width="*" Visibility="Hidden"/>
-                <DataGridTextColumn Header="LoanHistoryId" Binding="{Binding}" Width="*" Visibility="Hidden"/>
-                <DataGridTextColumn Header="LoanUserId" Binding="{Binding}" Width="*" Visibility="Hidden"/>
-                <DataGridTextColumn Header="제목" Binding="{Binding}" Width="1.5*"/>
-                <DataGridTextColumn Header="저자" Binding="{Binding}" Width="*"/>
-                <DataGridTextColumn Header="등록번호" Binding="{Binding}" Width="*"/>
-                <DataGridTextColumn Header="예약순번" Binding="{Binding}" Width="0.7*"/>
-                <DataGridTextColumn Header="예약만기일" Binding="{Binding}" Width="*"/>
+                <DataGridTextColumn Header="BookId" Binding="{Binding BookId}" Width="*" Visibility="Hidden"/>
+                <DataGridTextColumn Header="BookCopyId" Binding="{Binding BookCopyId}" Width="*" Visibility="Hidden"/>
+                <DataGridTextColumn Header="ReservationHistoryId" Binding="{Binding CurrentReservationHistoryId}" Width="*" Visibility="Hidden"/>
+                <DataGridTextColumn Header="ReservationUserId" Binding="{Binding CurrentReservationUserId}" Width="*" Visibility="Hidden"/>
+                <DataGridTextColumn Header="제목" Binding="{Binding Title}" Width="1.5*"/>
+                <DataGridTextColumn Header="저자" Binding="{Binding Author}" Width="*"/>
+                <DataGridTextColumn Header="등록번호" Binding="{Binding ClassificationNumber}" Width="*"/>
+                <DataGridTextColumn Header="예약순번" Binding="{Binding Priority}" Width="0.7*"/>
+                <DataGridTextColumn Header="예약만기일" Binding="{Binding CurrentReservationDueDate, StringFormat={}{0:yyyy-MM-dd}}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

@@ -22,5 +22,6 @@ namespace LibraryBQ.Service
         public int CurrentReservationHistoryId { get; set; }
         public DateOnly? CurrentReservationDueDate { get; set; }
         public int? CurrentReservationUserId { get; set; }
+        public int Priority { get; set; }
     }
 }

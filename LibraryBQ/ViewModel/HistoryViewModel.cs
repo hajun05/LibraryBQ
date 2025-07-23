@@ -129,6 +129,7 @@ namespace LibraryBQ.ViewModel
                         CurrentLoanStatusId = x.BookCopy.LoanStatusId,
                         CurrentReservationDueDate = x.ReservationDueDate,
                         CurrentReservationUserId = x.UserId,
+                        Priority = x.Priority,
                     }).ToList();
 
                 CurrentReservationHistories.Clear();
