@@ -39,7 +39,8 @@
         </DataGrid>
 
         <TextBlock Grid.Row="2" Text="예약 이력" FontSize="18" FontWeight="SemiBold" Foreground="DarkBlue" VerticalAlignment="Center"/>
-        <Button x:Name="Cancelbtn" Grid.Row="2" Margin="90,5,450,5" Content="취소" FontSize="15" FontWeight="SemiBold" Foreground="White" Background="DarkBlue"/>
+        <Button x:Name="Cancelbtn" Grid.Row="2" Margin="90,5,450,5" Content="취소" FontSize="15" FontWeight="SemiBold" Foreground="White" Background="DarkBlue"
+                Command="{Binding CancelbtnClickCommand}" CommandParameter="{Binding SelectedItem, ElementName=gridReserve}"/>
         <DataGrid x:Name="gridReserve" Grid.Row="3" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" FontSize="12"
                   ItemsSource="{Binding CurrentReservationHistories}">
             <DataGrid.ColumnHeaderStyle>

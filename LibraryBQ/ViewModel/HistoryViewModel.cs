@@ -55,7 +55,6 @@ namespace LibraryBQ.ViewModel
                     returnLoan.ReturnDate = DateOnly.FromDateTime(DateTime.Now);
 
                     BookCopy returnBookCopy = db.BookCopies.FirstOrDefault(x => x.Id == selectedLoanHistory.BookCopyId);
-                    
 
                     List<ReservationHistory> reservationHistories = db.ReservationHistories
                         .Where(x => x.BookCopyId == selectedLoanHistory.BookCopyId).OrderBy(x => x.Priority).ToList();
@@ -73,12 +72,51 @@ namespace LibraryBQ.ViewModel
                     }
                     CurrentLoanHistories.Remove(selectedLoanHistory);
                     db.SaveChanges();
-                    MessageBox.Show("반납이 완료되었습니다.");
+                    MessageBox.Show("대출 반납이 완료되었습니다.");
                 }
             }
             else
             {
                 MessageBox.Show("반납할 도서를 선택해 주십시오.");
+            }
+        }
+
+        [RelayCommand] private void CancelbtnClick(CurrentReservationHistoryDetail seletedReservationHistory)
+        {
+            if (seletedReservationHistory != null)
+            {
+                using (LibraryBQContext db = new LibraryBQContext())
+                {
+                    ReservationHistory cancelReservation = db.ReservationHistories
+                        .FirstOrDefault(x => x.Id == seletedReservationHistory.CurrentReservationHistoryId);
+
+                    var adjustCriteria = new { cancelReservation.BookCopyId, cancelReservation.Priority };
+
+                    db.ReservationHistories.Remove(cancelReservation);
+
+                    var targets = db.ReservationHistories
+                        .Where(x => x.BookCopyId == adjustCriteria.BookCopyId && x.Priority > adjustCriteria.Priority);
+
+                    if (targets.Count() > 0)
+                    {
+                        foreach (var t in targets)
+                            t.Priority -= 1;
+                    }
+                    else
+                    {
+                        BookCopy cancelBookCopy = db.BookCopies.FirstOrDefault(x => x.Id == adjustCriteria.BookCopyId);
+                        if (cancelBookCopy.LoanStatusId == 3)
+                            cancelBookCopy.LoanStatusId = 1;
+                    }
+
+                    CurrentReservationHistories.Remove(seletedReservationHistory);
+                    db.SaveChanges();
+                    MessageBox.Show("예약 취소가 완료되었습니다.");
+                }
+            }
+            else
+            {
+                MessageBox.Show("취소할 예약을 선택해 주십시오.");
             }
         }
 
