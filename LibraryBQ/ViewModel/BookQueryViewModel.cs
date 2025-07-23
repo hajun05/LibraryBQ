@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using LibraryBQ.Model;
 using LibraryBQ.Service;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,7 +18,7 @@ namespace LibraryBQ.ViewModel
     {
         // 필드와 프로퍼티 -----------------------------------------------------------
         private string _inputQueryStr;
-        private ObservableCollection<Book> _queriedBooks;
+        private ObservableCollection<BookDetail> _queriedBooks;
         private Book? _selectedBook;
         private IWindowService _iWindowService;
         public string InputQueryStr
@@ -25,7 +26,7 @@ namespace LibraryBQ.ViewModel
             get => _inputQueryStr;
             set => SetProperty(ref _inputQueryStr, value);
         }
-        public ObservableCollection<Book> QueriedBooks
+        public ObservableCollection<BookDetail> QueriedBooks
         {
             get { return _queriedBooks; }
             set => SetProperty(ref _queriedBooks, value);
@@ -40,7 +41,7 @@ namespace LibraryBQ.ViewModel
         public BookQueryViewModel(IWindowService iWindowService)
         {
             _iWindowService = iWindowService;
-            _queriedBooks = new ObservableCollection<Book>();
+            _queriedBooks = new ObservableCollection<BookDetail>();
             WeakReferenceMessenger.Default.Register<CommandMessage>(this, (r, m) => BookQueryCommand.Execute(null));
         }
 
@@ -51,19 +52,31 @@ namespace LibraryBQ.ViewModel
                 _queriedBooks.Clear();
             using (LibraryBQContext db = new LibraryBQContext())
             {
-                List<Book> result = new List<Book>();
+                List<BookDetail> result = new List<BookDetail>();
                 if (InputQueryStr.Trim() != "")
                 {
-                    result = db.Books.Where(x => x.Title.Contains(InputQueryStr)).ToList();
-                    result.AddRange(db.Books.Where(x => x.Author.Contains(InputQueryStr)).ToList());
+                    result = db.Books.Include(x => x.BookCopies)
+                        .Where(x => x.Title.Contains(InputQueryStr) || x.Author.Contains(InputQueryStr))
+                        .Select(x => new BookDetail()
+                        {
+                            Id = x.Id,
+                            Title = x.Title,
+                            Author = x.Author,
+                            BookCopiesCount = x.BookCopies.Count(),
+                        }).ToList();
                 }
                 else
                 {
-                    result = db.Books.ToList();
-                    result.AddRange(db.Books.ToList());
+                    result = db.Books.Include(x => x.BookCopies).Select(x => new BookDetail()
+                        {
+                            Id = x.Id,
+                            Title = x.Title,
+                            Author = x.Author,
+                            BookCopiesCount = x.BookCopies.Count(),
+                        }).ToList();
                 }
 
-                foreach (Book book in result)
+                foreach (BookDetail book in result)
                     _queriedBooks.Add(book);
             }
         }

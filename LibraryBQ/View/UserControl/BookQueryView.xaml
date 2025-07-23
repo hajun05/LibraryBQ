@@ -61,7 +61,7 @@
                                 </Button>
 
                                 <TextBlock x:Name="QueriedBookAuthor" Text="{Binding Author}" Grid.Row="1" FontSize="15" VerticalAlignment="Center"/>
-                                <TextBlock x:Name="QueriedBookNum" Text="{Binding BookCopies.Count}" Grid.Row="2" FontSize="15" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="QueriedBookNum" Text="{Binding BookCopiesCount}" Grid.Row="2" FontSize="15" VerticalAlignment="Center"/>
                                 <Border Grid.Row="3" Height="1" Width="700" Background="#E0E0E0" Margin="0,10,0,0"/>
                             </Grid>
                         </DataTemplate>
