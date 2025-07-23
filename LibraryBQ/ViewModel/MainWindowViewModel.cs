@@ -138,23 +138,25 @@ namespace LibraryBQ.ViewModel
             using (LibraryBQContext db = new LibraryBQContext())
             {
                 // 만료할 예약 목록 추출
-                List<ReservationHistory> expiredReservations = db.ReservationHistories.Where(x => x.ReservationDueDate < today).ToList();
+                var expiredReservations = db.ReservationHistories.Where(x => x.ReservationDueDate < today).ToList();
 
-                if (expiredReservations.Count > 0)
+                if (expiredReservations.Count() > 0)
                 {
                     // 만료할 예약의 도서 번호와 예약 우선순위 추출
-                    var associatedReservations = expiredReservations.Select(x => new { x.BookCopyId, x.Priority }).ToList();
+                    var reservationCriterias = expiredReservations.Select(x => new { x.BookCopyId, x.Priority });
 
                     // 만료할 에약 목록 삭제
                     db.ReservationHistories.RemoveRange(expiredReservations);
 
                     // 만료한 예약과 같은 도서를 예약한 이력들의 예약 우선순위 조정
-                    foreach (var reservation in associatedReservations)
+                    foreach (var reservation in reservationCriterias)
                     {
-                        var targets = db.ReservationHistories.Where(x => x.BookCopyId == reservation.BookCopyId && x.Priority > reservation.Priority);
+                        List<ReservationHistory> targets = db.ReservationHistories
+                            .Where(x => x.BookCopyId == reservation.BookCopyId && x.Priority > reservation.Priority)
+                            .ToList();
 
-                        foreach (var t in targets)
-                            t.Priority -= 1;
+                        for (int i = 0; i < targets.Count; i++)
+                            targets[i].Priority -= 1;
                     }
 
                     db.SaveChanges();
