@@ -4,9 +4,9 @@ using CommunityToolkit.Mvvm.Messaging;
 using LibraryBQ.Model;
 using LibraryBQ.Service;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.ObjectModel;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,7 +19,7 @@ namespace LibraryBQ.ViewModel
         // 필드와 프로퍼티 -----------------------------------------------------------
         private string _inputQueryStr;
         private ObservableCollection<BookDetail> _queriedBooks;
-        private Book? _selectedBook;
+        private BookDetail _selectedBook;
         private IWindowService _iWindowService;
         public string InputQueryStr
         {
@@ -31,7 +31,7 @@ namespace LibraryBQ.ViewModel
             get { return _queriedBooks; }
             set => SetProperty(ref _queriedBooks, value);
         }
-        public Book? SelectedBook
+        public BookDetail SelectedBook
         {
             get => _selectedBook;
             set => SetProperty(ref _selectedBook, value);
@@ -57,23 +57,12 @@ namespace LibraryBQ.ViewModel
                 {
                     result = db.Books.Include(x => x.BookCopies)
                         .Where(x => x.Title.Contains(InputQueryStr) || x.Author.Contains(InputQueryStr))
-                        .Select(x => new BookDetail()
-                        {
-                            Id = x.Id,
-                            Title = x.Title,
-                            Author = x.Author,
-                            BookCopiesCount = x.BookCopies.Count(),
-                        }).ToList();
+                        .Select(x => new BookDetail(x)).ToList();
                 }
                 else
                 {
-                    result = db.Books.Include(x => x.BookCopies).Select(x => new BookDetail()
-                        {
-                            Id = x.Id,
-                            Title = x.Title,
-                            Author = x.Author,
-                            BookCopiesCount = x.BookCopies.Count(),
-                        }).ToList();
+                    result = db.Books.Include(x => x.BookCopies)
+                        .Select(x => new BookDetail(x)).ToList();
                 }
 
                 foreach (BookDetail book in result)
@@ -84,7 +73,13 @@ namespace LibraryBQ.ViewModel
         [RelayCommand] private void BookCopyOpen()
         {
             if (_selectedBook != null)
-                _iWindowService.ShowBookCopyWindow(_selectedBook);
+            {
+                using (LibraryBQContext db = new LibraryBQContext())
+                {
+                    Book book = db.Books.Include(x => x.BookCopies).FirstOrDefault(x => x.Id == _selectedBook.Id);
+                    _iWindowService.ShowBookCopyWindow(book);
+                }
+            }
         }
 
         // 메소드 --------------------------------------------------------------------

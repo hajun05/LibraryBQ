@@ -13,12 +13,11 @@ using System.Windows;
 
 namespace LibraryBQ.ViewModel
 {
-    public partial class HistoryViewModel : ObservableObject
+    public partial class HistoryViewModel : LoanBaseViewModel
     {
         // 필드 및 프로퍼티 ---------------------------------------------
         private ObservableCollection<CurrentLoanHistoryDetail> _currentLoanHistories;
         private ObservableCollection<CurrentReservationHistoryDetail> _currentReservationHistories;
-        private LoginUserAccountStore _loginUserAccount;
 
         public ObservableCollection<CurrentLoanHistoryDetail> CurrentLoanHistories
         {
@@ -30,18 +29,15 @@ namespace LibraryBQ.ViewModel
             get { return _currentReservationHistories; }
             set => SetProperty(ref _currentReservationHistories, value);
         }
-        public LoginUserAccountStore LoginUserAccount
-        {
-            get => _loginUserAccount;
-            set => SetProperty(ref _loginUserAccount, value);
-        }
 
         // 생성자 ------------------------------------------------------
         public HistoryViewModel()
         {
-            _loginUserAccount = LoginUserAccountStore.Instance();
             CurrentLoanHistories = new ObservableCollection<CurrentLoanHistoryDetail>();
             CurrentReservationHistories = new ObservableCollection<CurrentReservationHistoryDetail>();
+            // LoanBaseViewModel에서 상속받은 프로퍼티
+            LoginUserAccount = LoginUserAccountStore.Instance();
+            BookCopies = new ObservableCollection<BookCopyDetail>();
         }
 
         // 커멘드 ------------------------------------------------------
@@ -120,14 +116,39 @@ namespace LibraryBQ.ViewModel
             }
         }
 
+        [RelayCommand] private void LoanbtnClick(CurrentReservationHistoryDetail seletedReservationHistory)
+        {
+            if (seletedReservationHistory != null)
+            {
+                // 현재 사용자가 1순위 예약자일 경우 도서 대출
+                if (seletedReservationHistory.Priority == 1)
+                {
+                    using (LibraryBQContext db = new LibraryBQContext())
+                    {
+                        BookCopyDetail selectedBookCopy = new BookCopyDetail(db.BookCopies.FirstOrDefault(x => x.Id == seletedReservationHistory.BookCopyId));
+                        LoanBookCopy(db, selectedBookCopy);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show($"아직 첫번째 차례가 아닙니다.\r\n현재 {seletedReservationHistory.Priority}번째 순서입니다.");
+                }
+            }
+            else
+            {
+                MessageBox.Show("대출할 예약 도서를 선택해 주십시오.");
+            }
+        }
+
         // 메소드 ------------------------------------------------------
         public void LoanHistoriesQuery()
         {
             using (LibraryBQContext db = new LibraryBQContext())
             {
+                List<string> overdueBooks = new List<string>();
                 List<CurrentLoanHistoryDetail> answer = db.LoanHistories
                     .Include(x => x.BookCopy).ThenInclude(x => x.Book)
-                    .Where(x => x.UserId == _loginUserAccount.CurrentLoginUserAccount.Id && x.ReturnDate == null)
+                    .Where(x => x.UserId == LoginUserAccount.CurrentLoginUserAccount.Id && x.ReturnDate == null)
                     .Select(x => new CurrentLoanHistoryDetail()
                     {
                         BookCopyId = x.BookCopyId,
@@ -145,6 +166,16 @@ namespace LibraryBQ.ViewModel
                 foreach (CurrentLoanHistoryDetail answerItem in answer)
                 {
                     CurrentLoanHistories.Add(answerItem);
+                    if (answerItem.CurrentLoanDueDate > DateOnly.FromDateTime((DateTime.Now)))
+                        overdueBooks.Add(answerItem.Title);
+                }
+
+                if (overdueBooks.Count > 0)
+                {
+                    string overdueString = "연체되신 도서가 있습니다.\r\n";
+                    foreach (string title in overdueBooks)
+                        overdueString += String.Format($" {title}\r\n");
+                    MessageBox.Show($"{overdueString}", "안내", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
         }
@@ -155,7 +186,7 @@ namespace LibraryBQ.ViewModel
             {
                 List<CurrentReservationHistoryDetail> answer = db.ReservationHistories
                     .Include(x => x.BookCopy).ThenInclude(x => x.Book)
-                    .Where(x => x.UserId == _loginUserAccount.CurrentLoginUserAccount.Id)
+                    .Where(x => x.UserId == LoginUserAccount.CurrentLoginUserAccount.Id)
                     .Select(x => new CurrentReservationHistoryDetail()
                     {
                         BookCopyId = x.BookCopyId,

@@ -40,8 +40,10 @@
 
         <TextBlock Grid.Row="2" Text="예약 이력" FontSize="18" FontWeight="SemiBold" Foreground="DarkBlue" VerticalAlignment="Center"/>
         <Button x:Name="Cancelbtn" Grid.Row="2" Margin="90,5,450,5" Content="취소" FontSize="15" FontWeight="SemiBold" Foreground="White" Background="DarkBlue"
-                Command="{Binding CancelbtnClickCommand}" CommandParameter="{Binding SelectedItem, ElementName=gridReserve}"/>
-        <DataGrid x:Name="gridReserve" Grid.Row="3" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" FontSize="12"
+                Command="{Binding CancelbtnClickCommand}" CommandParameter="{Binding SelectedItem, ElementName=gridReservation}"/>
+        <Button x:Name="Loanbtn" Grid.Row="2" Margin="210,5,320,5" Content="대출" FontSize="15" FontWeight="SemiBold" Foreground="White" Background="DarkBlue"
+                Command="{Binding LoanbtnClickCommand}" CommandParameter="{Binding SelectedItem, ElementName=gridReservation}"/>
+        <DataGrid x:Name="gridReservation" Grid.Row="3" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" FontSize="12"
                   ItemsSource="{Binding CurrentReservationHistories}">
             <DataGrid.ColumnHeaderStyle>
                 <Style TargetType="DataGridColumnHeader">

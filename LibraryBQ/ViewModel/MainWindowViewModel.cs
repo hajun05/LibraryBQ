@@ -51,7 +51,9 @@ namespace LibraryBQ.ViewModel
                     CurrentViewModel = _historyViewModel;
                 }
                 else
+                {
                     CurrentViewModel = _homeViewModel;
+                }
             };
 
             // 만료된 예약목록 처리
@@ -96,6 +98,7 @@ namespace LibraryBQ.ViewModel
                 if (MessageBox.Show("로그아웃하시겠습니까?", "안내", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
                     LoginUserAccountStore.DetachLoginUserAccount();
+                    _homeViewModel.InputQueryStr = string.Empty;
                     if (CurrentViewModel == _historyViewModel)
                     {
                         _historyViewModel.HistoryClear();
