@@ -66,14 +66,52 @@ namespace LibraryBQ.ViewModel
                     {
                         returnBookCopy.LoanStatusId = 1;
                     }
+
                     CurrentLoanHistories.Remove(selectedLoanHistory);
                     db.SaveChanges();
+
+                    LoginUserAccount.CheckHasOverdueLoan(db);
+
                     MessageBox.Show("대출 반납이 완료되었습니다.");
                 }
             }
             else
             {
                 MessageBox.Show("반납할 도서를 선택해 주십시오.");
+            }
+        }
+
+        [RelayCommand] private void ExtensionbtnClick(CurrentLoanHistoryDetail selectedLoanHistory) // 대출 연장 커멘드
+        {
+            if (LoginUserAccount.HasOverdueLoan)
+            {
+                MessageBox.Show("연체된 도서가 있습니다.\r\n연체된 모든 도서를 반납하셔야 연장 가능합니다.");
+                return;
+            }
+            if (selectedLoanHistory != null)
+            {
+                using (LibraryBQContext db = new LibraryBQContext())
+                {
+                    LoanHistory extensionLoanHistory = db.LoanHistories.FirstOrDefault(x => x.Id == selectedLoanHistory.Id);
+                    if (extensionLoanHistory.ExtensionCount > 2)
+                    {
+                        MessageBox.Show("연장 한도를 초과했습니다.");
+                        return;
+                    }
+                    extensionLoanHistory.LoanDueDate = DateOnly.FromDateTime(DateTime.Now.AddDays(14));
+                    extensionLoanHistory.ExtensionCount += 1;
+
+                    CurrentLoanHistoryDetail extensionCurrentLoan = CurrentLoanHistories.First(x => x.Id == extensionLoanHistory.Id);
+                    extensionCurrentLoan.CurrentLoanDueDate = extensionLoanHistory.LoanDueDate;
+                    extensionCurrentLoan.ExtensionCount += 1;
+
+                    db.SaveChanges();
+                    MessageBox.Show("대출 연장이 완료되었습니다.");
+                }
+            }
+            else
+            {
+                MessageBox.Show("연장할 도서를 선택해 주십시오.");
             }
         }
 
@@ -118,8 +156,18 @@ namespace LibraryBQ.ViewModel
 
         [RelayCommand] private void LoanbtnClick(CurrentReservationHistoryDetail seletedReservationHistory)
         {
+            if (LoginUserAccount.HasOverdueLoan)
+            {
+                MessageBox.Show("연체된 도서가 있습니다.\r\n연체된 모든 도서를 반납하셔야 대출 가능합니다.");
+                return;
+            }
             if (seletedReservationHistory != null)
             {
+                if (seletedReservationHistory.CurrentLoanStatusId == 2)
+                {
+                    MessageBox.Show("도서가 아직 반납되지 않았습니다.");
+                    return;
+                }
                 // 현재 사용자가 1순위 예약자일 경우 도서 대출
                 if (seletedReservationHistory.Priority == 1)
                 {
@@ -127,6 +175,9 @@ namespace LibraryBQ.ViewModel
                     {
                         BookCopyDetail selectedBookCopy = new BookCopyDetail(db.BookCopies.FirstOrDefault(x => x.Id == seletedReservationHistory.BookCopyId));
                         LoanBookCopy(db, selectedBookCopy);
+
+                        LoanHistoriesQuery();
+                        CurrentReservationHistories.Remove(seletedReservationHistory);
                     }
                 }
                 else
@@ -145,37 +196,15 @@ namespace LibraryBQ.ViewModel
         {
             using (LibraryBQContext db = new LibraryBQContext())
             {
-                List<string> overdueBooks = new List<string>();
                 List<CurrentLoanHistoryDetail> answer = db.LoanHistories
                     .Include(x => x.BookCopy).ThenInclude(x => x.Book)
                     .Where(x => x.UserId == LoginUserAccount.CurrentLoginUserAccount.Id && x.ReturnDate == null)
-                    .Select(x => new CurrentLoanHistoryDetail()
-                    {
-                        BookCopyId = x.BookCopyId,
-                        BookId = x.BookCopy.BookId,
-                        Title = x.BookCopy.Book.Title,
-                        Author = x.BookCopy.Book.Author,
-                        ClassificationNumber = String.Format($"{x.BookCopy.BookId}-{x.BookCopy.Id}"),
-                        CurrentLoanHistoryId = x.Id,
-                        CurrentLoanStatusId = x.BookCopy.LoanStatusId,
-                        CurrentLoanDueDate = x.LoanDueDate,
-                        CurrentLoanUserId = x.UserId,
-                    }).ToList();
+                    .Select(x => new CurrentLoanHistoryDetail(x)).ToList();
 
                 CurrentLoanHistories.Clear();
                 foreach (CurrentLoanHistoryDetail answerItem in answer)
                 {
                     CurrentLoanHistories.Add(answerItem);
-                    if (answerItem.CurrentLoanDueDate > DateOnly.FromDateTime((DateTime.Now)))
-                        overdueBooks.Add(answerItem.Title);
-                }
-
-                if (overdueBooks.Count > 0)
-                {
-                    string overdueString = "연체되신 도서가 있습니다.\r\n";
-                    foreach (string title in overdueBooks)
-                        overdueString += String.Format($" {title}\r\n");
-                    MessageBox.Show($"{overdueString}", "안내", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
         }
@@ -187,19 +216,7 @@ namespace LibraryBQ.ViewModel
                 List<CurrentReservationHistoryDetail> answer = db.ReservationHistories
                     .Include(x => x.BookCopy).ThenInclude(x => x.Book)
                     .Where(x => x.UserId == LoginUserAccount.CurrentLoginUserAccount.Id)
-                    .Select(x => new CurrentReservationHistoryDetail()
-                    {
-                        BookCopyId = x.BookCopyId,
-                        BookId = x.BookCopy.BookId,
-                        Title = x.BookCopy.Book.Title,
-                        Author = x.BookCopy.Book.Author,
-                        ClassificationNumber = String.Format($"{x.BookCopy.BookId}-{x.BookCopy.Id}"),
-                        CurrentReservationHistoryId = x.Id,
-                        CurrentLoanStatusId = x.BookCopy.LoanStatusId,
-                        CurrentReservationDueDate = x.ReservationDueDate,
-                        CurrentReservationUserId = x.UserId,
-                        Priority = x.Priority,
-                    }).ToList();
+                    .Select(x => new CurrentReservationHistoryDetail(x)).ToList();
 
                 CurrentReservationHistories.Clear();
                 foreach (CurrentReservationHistoryDetail answerItem in answer)

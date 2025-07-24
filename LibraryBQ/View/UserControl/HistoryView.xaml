@@ -17,6 +17,8 @@
         <TextBlock Grid.Row="0" Text="대출 이력" FontSize="18" FontWeight="SemiBold" Foreground="DarkBlue" VerticalAlignment="Center"/>
         <Button x:Name="Returnbtn" Grid.Row="0" Margin="90,5,450,5" Content="반납" FontSize="15" FontWeight="SemiBold" Foreground="White" Background="DarkBlue"
                 Command="{Binding ReturnbtnClickCommand}" CommandParameter="{Binding SelectedItem, ElementName=gridLoan}"/>
+        <Button x:Name="Extensionbtn" Grid.Row="0" Margin="210,5,320,5" Content="연장" FontSize="15" FontWeight="SemiBold" Foreground="White" Background="DarkBlue"
+                Command="{Binding ExtensionbtnClickCommand}" CommandParameter="{Binding SelectedItem, ElementName=gridLoan}"/>
         <DataGrid x:Name="gridLoan" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" FontSize="12"
                   ItemsSource="{Binding CurrentLoanHistories}">
             <DataGrid.ColumnHeaderStyle>
@@ -31,9 +33,10 @@
                 <DataGridTextColumn Header="BookCopyId" Binding="{Binding BookCopyId}" Width="*" Visibility="Hidden"/>
                 <DataGridTextColumn Header="LoanHistoryId" Binding="{Binding CurrentLoanHistoryId}" Width="*" Visibility="Hidden"/>
                 <DataGridTextColumn Header="LoanUserId" Binding="{Binding CurrentLoanUserId}" Width="*" Visibility="Hidden"/>
-                <DataGridTextColumn Header="제목" Binding="{Binding Title}" Width="1.7*"/>
+                <DataGridTextColumn Header="제목" Binding="{Binding Title}" Width="1.5*"/>
                 <DataGridTextColumn Header="저자" Binding="{Binding Author}" Width="*"/>
                 <DataGridTextColumn Header="등록번호" Binding="{Binding ClassificationNumber}" Width="*"/>
+                <DataGridTextColumn Header="연장횟수" Binding="{Binding ExtensionCount}" Width="0.7*"/>
                 <DataGridTextColumn Header="반납예정일" Binding="{Binding CurrentLoanDueDate, StringFormat={}{0:yyyy-MM-dd}}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
