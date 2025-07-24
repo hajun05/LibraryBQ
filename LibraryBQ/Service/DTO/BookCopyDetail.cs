@@ -1,4 +1,5 @@
-﻿using LibraryBQ.Model;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using LibraryBQ.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LibraryBQ.Service
 {
-    public partial class BookCopyDetail
+    public partial class BookCopyDetail : ObservableObject
     {
         // 도서 관련 프로퍼티 ---------------------------------------------
         public int BookCopyId { get; set; }
@@ -51,9 +52,13 @@ namespace LibraryBQ.Service
             ClassificationNumber = String.Format($"{bookCopy.BookId}-{bookCopy.Id}");
             CurrentLoanStatusId = bookCopy.LoanStatusId;
             CurrentStatusName = ConvertLoanStatus(bookCopy.LoanStatusId);
-            CurrentLoanDueDate = (bookCopy.LoanStatusId == 2) ? bookCopy.LoanHistories.OrderByDescending(lh => lh.Id).FirstOrDefault().LoanDueDate : null;
-            CurrentLoanUserId = (bookCopy.LoanStatusId == 2) ? bookCopy.LoanHistories.OrderByDescending(lh => lh.Id).FirstOrDefault().UserId : -1;
-            CurrentReservations = bookCopy.ReservationHistories.ToList();
+            if (bookCopy.LoanHistories.Count > 0)
+            {
+                CurrentLoanDueDate = (bookCopy.LoanStatusId == 2) ? bookCopy.LoanHistories.OrderByDescending(lh => lh.Id).FirstOrDefault().LoanDueDate : null;
+                CurrentLoanUserId = (bookCopy.LoanStatusId == 2) ? bookCopy.LoanHistories.OrderByDescending(lh => lh.Id).FirstOrDefault().UserId : -1;
+            }
+            if (bookCopy.ReservationHistories.Count > 0)
+                CurrentReservations = bookCopy.ReservationHistories.ToList();
         }
     }
 }

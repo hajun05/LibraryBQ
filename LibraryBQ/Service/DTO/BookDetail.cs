@@ -23,7 +23,7 @@ namespace LibraryBQ.Service
             Id = book.Id;
             Title = book.Title;
             Author = book.Author;
-            BookCopiesCount = book.BookCopies.Count();
+            BookCopiesCount = book.BookCopies.Count;
         }
     }
 }

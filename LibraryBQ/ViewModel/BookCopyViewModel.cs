@@ -68,25 +68,8 @@ namespace LibraryBQ.ViewModel
 
             using (LibraryBQContext db = new LibraryBQContext())
             {
-                // 현재 사용자의 대출 이력 조회
-                var CurrentLoans = db.LoanHistories.Include(x => x.User)
-                    .Where(x => x.UserId == LoginUserAccount.CurrentLoginUserAccount.Id && x.ReturnDate == null)
-                    .Select(x => new { x.LoanDueDate, x.BookCopy }).ToList();
-
-                // 대출 및 예약이 불가능한 경우 탐지
-                foreach (var loan in CurrentLoans)
-                {
-                    if (loan.LoanDueDate < DateOnly.FromDateTime(DateTime.Now))
-                    {
-                        MessageBox.Show("연체된 도서가 있습니다.\r\n연체된 모든 도서를 반납하셔야 대출 가능합니다.");
-                        return;
-                    }
-                    else if (loan.BookCopy.BookId == selectedBookCopy.BookId)
-                    {
-                        MessageBox.Show("이미 대출하신 도서입니다.");
-                        return;
-                    }
-                }
+                if (!CheckCanLoan(db, selectedBookCopy))
+                    return;
 
                 if (selectedBookCopy.CurrentLoanStatusId == 1) // 대출가능 도서
                 {

@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LibraryBQ.Model;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,7 @@ namespace LibraryBQ.Service
                 {
                     IsLogin = (_currentUserAccount != null);
                     Name = IsLogin ? _currentUserAccount.Name : "";
+                    HasOverdueLoan = IsLogin ? CheckHasOverdueLoan() : false;
                 }
             }
         }
@@ -73,6 +75,42 @@ namespace LibraryBQ.Service
             if (CurrentLoginUserAccount != null)
             {
                 CurrentLoginUserAccount = null;
+            }
+        }
+
+        public bool CheckHasOverdueLoan(LibraryBQContext db)
+        {
+            HasOverdueLoan = false;
+            DateOnly today = DateOnly.FromDateTime(DateTime.Now);
+
+            var CurrentLoans = db.LoanHistories.Include(x => x.User)
+                .Where(x => x.ReturnDate == null)
+                .Where(x => x.UserId == CurrentLoginUserAccount.Id)
+                .Where(x => x.LoanDueDate < today)
+                .Select(x => new { x.LoanDueDate }).ToList();
+
+            if (CurrentLoans.Any())
+                HasOverdueLoan = true;
+
+            return HasOverdueLoan;
+        }
+
+        public bool CheckHasOverdueLoan()
+        {
+            using (var db = new LibraryBQContext())
+            {
+                DateOnly today = DateOnly.FromDateTime(DateTime.Now);
+
+                var CurrentLoans = db.LoanHistories.Include(x => x.User)
+                    .Where(x => x.ReturnDate == null)
+                    .Where(x => x.UserId == CurrentLoginUserAccount.Id)
+                    .Where(x => x.LoanDueDate < today)
+                    .Select(x => new { x.LoanDueDate }).ToList();
+
+                if (CurrentLoans.Any())
+                    return true;
+
+                return false;
             }
         }
     }

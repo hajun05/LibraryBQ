@@ -121,6 +121,28 @@ namespace LibraryBQ.ViewModel
 
             return hasReservation;
         }
+        // 대출 및 예약이 불가능한 경우 탐지
+        protected bool CheckCanLoan(LibraryBQContext db, BookCopyDetail selectedBookCopy)
+        {
+            if (_loginUserAccount.HasOverdueLoan)
+            {
+                MessageBox.Show("연체된 도서가 있습니다.\r\n연체된 모든 도서를 반납하셔야 대출 가능합니다.");
+                return false;
+            }
+
+            // 이미 대출한 도서인지 확인
+            var hasAlready = db.LoanHistories.Include(x => x.User)
+                .Where(x => x.ReturnDate == null && x.UserId == LoginUserAccount.CurrentLoginUserAccount.Id)
+                .Any(x => x.BookCopy.BookId == selectedBookCopy.BookId);
+
+            if (hasAlready)
+            {
+                MessageBox.Show("이미 대출하신 도서입니다.");
+                return false;
+            }
+
+            return true;
+        }
         // 도서 대출 실행
         protected void LoanBookCopy(LibraryBQContext db, BookCopyDetail selectedBookCopy)
         {
@@ -144,7 +166,7 @@ namespace LibraryBQ.ViewModel
             BookCopy loanBookCopy = db.BookCopies.FirstOrDefault(x => x.Id == selectedBookCopy.BookCopyId);
             if (loanBookCopy.LoanStatusId == 1)
                 MessageBox.Show($"도서가 대출되었습니다.\r\n반납일은 {loanHistory.LoanDueDate}일 입니다.");
-            else
+            else if (loanBookCopy.LoanStatusId == 3)
                 MessageBox.Show($"예약하신 도서가 대출되었습니다.\r\n반납일은 {loanHistory.LoanDueDate}일 입니다.");
             loanBookCopy.LoanStatusId = 2;
 

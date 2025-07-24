@@ -59,7 +59,8 @@ namespace LibraryBQ.ViewModel
                     else
                     {
                         AccountStore = LoginUserAccountStore.Instance(LoginUser);
-                        MessageBox.Show($"로그인되었습니다.\r\n환영합니다 {AccountStore.CurrentLoginUserAccount.Name}님.");
+                        if (AccountStore.HasOverdueLoan)
+                            MessageBox.Show($"연체된 도서가 존재합니다.\r\n연체된 모든 도서를 반납하셔야 대출 및 예약이 가능합니다.");
                         LoginEndAction.Invoke(isLoginByHistory);
                     }
                 }
