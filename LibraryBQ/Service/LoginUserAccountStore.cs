@@ -15,6 +15,8 @@ namespace LibraryBQ.Service
         // 필드와 프로퍼티 -------------------------------------------
         private User? _currentUserAccount;
         private bool _isLogin;
+        private bool _hasOverdueLoan;
+        private string _name;
 
         public User? CurrentLoginUserAccount
         {
@@ -22,13 +24,26 @@ namespace LibraryBQ.Service
             set
             {
                 if (SetProperty(ref _currentUserAccount, value))
+                {
                     IsLogin = (_currentUserAccount != null);
+                    Name = IsLogin ? _currentUserAccount.Name : "";
+                }
             }
         }
         public bool IsLogin
         {
             get => _isLogin;
             set => SetProperty(ref _isLogin, value);
+        }
+        public bool HasOverdueLoan
+        {
+            get => _hasOverdueLoan;
+            set => SetProperty(ref _hasOverdueLoan, value);
+        }
+        public string Name
+        {
+            get => _name;
+            set => SetProperty(ref _name, value);
         }
 
         // 생성자(싱글톤 패턴 적용) ------------------------------------

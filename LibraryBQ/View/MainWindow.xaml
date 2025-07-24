@@ -60,10 +60,14 @@
         <Grid Grid.Row="1" Background="#FFD2DCE6">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
-            <Button x:Name="Loginbtn" HorizontalAlignment="Right" Width="70" Content="로그인" FontSize="12" FontWeight="SemiBold" Background="Transparent" BorderBrush="Transparent"
+            <TextBlock x:Name="LoginUserName" Grid.Column="0" Text="{Binding LoginUserAccountStore.Name}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+            <TextBlock Grid.Column="1" Text="님" FontSize="12" VerticalAlignment="Center" Visibility="{Binding LoginUserAccountStore.IsLogin, Converter={StaticResource BoolVisibilityConverter}}"/>
+            <Button x:Name="Loginbtn" HorizontalAlignment="Right" Grid.Column="2" Width="70" Content="로그인" FontSize="12" FontWeight="SemiBold" Background="Transparent" BorderBrush="Transparent"
                     Command="{Binding LoginbtnClickCommand}" Visibility="{Binding LoginUserAccountStore.IsLogin, Converter={StaticResource ReverseBoolVisibilityConverter}}"/>
-            <Button x:Name="Logoutbtn" HorizontalAlignment="Right" Width="70" Content="로그아웃" FontSize="12" FontWeight="SemiBold" Background="Transparent" BorderBrush="Transparent"
+            <Button x:Name="Logoutbtn" HorizontalAlignment="Right" Grid.Column="2" Width="70" Content="로그아웃" FontSize="12" FontWeight="SemiBold" Background="Transparent" BorderBrush="Transparent"
                     Command="{Binding LoginbtnClickCommand}" Visibility="{Binding LoginUserAccountStore.IsLogin, Converter={StaticResource BoolVisibilityConverter}}"/>
         </Grid>
 
