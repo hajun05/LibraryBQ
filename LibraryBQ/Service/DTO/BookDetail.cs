@@ -16,5 +16,14 @@ namespace LibraryBQ.Service
         public string Author { get; set; } = null!;
 
         public int BookCopiesCount { get; set; }
+
+        public BookDetail() {}
+        public BookDetail(Book book)
+        {
+            Id = book.Id;
+            Title = book.Title;
+            Author = book.Author;
+            BookCopiesCount = book.BookCopies.Count();
+        }
     }
 }

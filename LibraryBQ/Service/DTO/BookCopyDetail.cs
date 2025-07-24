@@ -27,7 +27,7 @@ namespace LibraryBQ.Service
         public List<ReservationHistory>? CurrentReservations { get; set; }
 
         // 메소드 --------------------------------------------------------
-        public static string ConvertLoanStatus(int _currentLoanStatusId)
+        public string ConvertLoanStatus(int _currentLoanStatusId)
         {
             string answer = string.Empty;
             switch (_currentLoanStatusId)
@@ -40,6 +40,20 @@ namespace LibraryBQ.Service
                     answer = "예약중"; break;
             }
             return answer;
+        }
+
+        // 생성자 --------------------------------------------------------
+        public BookCopyDetail() { }
+        public BookCopyDetail(BookCopy bookCopy)
+        {
+            BookCopyId = bookCopy.Id;
+            BookId = bookCopy.BookId;
+            ClassificationNumber = String.Format($"{bookCopy.BookId}-{bookCopy.Id}");
+            CurrentLoanStatusId = bookCopy.LoanStatusId;
+            CurrentStatusName = ConvertLoanStatus(bookCopy.LoanStatusId);
+            CurrentLoanDueDate = (bookCopy.LoanStatusId == 2) ? bookCopy.LoanHistories.OrderByDescending(lh => lh.Id).FirstOrDefault().LoanDueDate : null;
+            CurrentLoanUserId = (bookCopy.LoanStatusId == 2) ? bookCopy.LoanHistories.OrderByDescending(lh => lh.Id).FirstOrDefault().UserId : -1;
+            CurrentReservations = bookCopy.ReservationHistories.ToList();
         }
     }
 }
