@@ -124,6 +124,13 @@ namespace LibraryBQ.ViewModel
         // 도서 대출 실행
         protected void LoanBookCopy(LibraryBQContext db, BookCopyDetail selectedBookCopy)
         {
+            if (_loginUserAccount.CurrentLoginUserAccount.MaxLoanNum
+                <= db.LoanHistories.Include(x => x.User).Where(x => x.ReturnDate == null && x.UserId == _loginUserAccount.CurrentLoginUserAccount.Id).Count())
+            {
+                MessageBox.Show("대출 한도를 초과했습니다.");
+                return;
+            }
+
             LoanHistory loanHistory = NewLoanHistory(db, selectedBookCopy);
 
             // 대출 성공시 대출한 도서 예약 이력 삭제 및 예약 순번 조정
