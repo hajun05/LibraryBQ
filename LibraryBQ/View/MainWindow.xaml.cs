@@ -21,22 +21,27 @@ namespace LibraryBQ.View
     /// </summary>
     public partial class MainWindow : Window
     {
+        // App.xaml.cs에서 DI 컨테이너가 직접 생성 및 생성자 주입
         public MainWindow(MainWindowViewModel viewModel)
         {
             InitializeComponent();
+            // 생성자 인수를 통한 ViewModel - View 매핑
             DataContext = viewModel;
         }
 
+        // 종료 버튼
         private void Closebtn_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
 
+        // 최소화 버튼
         private void Minimizebtn_Click(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Minimized;
         }
 
+        // 타이틀바 잡고 이동
         private void Grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)

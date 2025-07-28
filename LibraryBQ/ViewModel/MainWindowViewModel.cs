@@ -6,15 +6,22 @@ using System.Windows;
 
 namespace LibraryBQ.ViewModel
 {
+    // MainWindowViewModel: 애플리케이션 전체 화면 전환 및 상태를 관리하는 최상위 ViewModel (MVVM, WPF)
+    // - DI 컨테이너에서 하위 주요 ViewModel(Home, Login, BookQuery, History 등)을 생성자 주입받아 통합 관리
+    // - CurrentViewModel 교체를 통해, 메인 윈도우에서 실제로 표시되는 콘텐츠(페이지/화면) 전환을 실현
+    // - 각 하위 ViewModel에서의 Action(델리게이트) 연결을 통해, 로그인/검색 등 핵심 이벤트에 맞춰 중앙에서 화면과 상태를 조정
+    // - 로그아웃/예약 만료처리 등 공통 로직, 최초 진입 시 초기화, 화면전환 커맨드(Home/Book/Login/History 버튼) 등 중앙 집중 처리
+    // - 앱 전체의 '상태 관리, 내비게이션, 전역 로직'이 집약된 MVVM 구조의 컴포지션 루트(MainViewModel) 역할
     public partial class MainWindowViewModel : ObservableObject
     {
         // 필드와 프로퍼티 --------------------------------------
-        private ObservableObject _currentViewModel;
+        private ObservableObject _currentViewModel; // 현재 표시되고 있는 ViewModel (화면 중앙전환에 사용)
+        // DI로 주입된 하위 ViewModel
         private HomeViewModel _homeViewModel;
         private BookQueryViewModel _bookQueryViewModel;
         private LoginViewModel _loginViewModel;
         private HistoryViewModel _historyViewModel;
-        private LoginUserAccountStore _loginUserAccountStore;
+        private LoginUserAccountStore _loginUserAccountStore; // 로그인 사용자 전역 상태 저장소
 
         public ObservableObject CurrentViewModel
         {
@@ -28,6 +35,7 @@ namespace LibraryBQ.ViewModel
         }
 
         // 생성자 ----------------------------------------------
+        // DI로 하위 ViewModel들을 받아서 앱 전체 화면 상태·이벤트 연결·상호작용 로직 구성
         public MainWindowViewModel(HomeViewModel homeViewModel, BookQueryViewModel bookQueryViewModel, LoginViewModel loginViewModel, HistoryViewModel historyViewModel)
         {
             _homeViewModel = homeViewModel;
@@ -36,7 +44,7 @@ namespace LibraryBQ.ViewModel
             _historyViewModel = historyViewModel;
             _loginUserAccountStore = LoginUserAccountStore.Instance();
 
-            // 각 하위 ViewModel에서 상위 ViewModel의 상태 변경을 수행할 대리자 초기화
+            // 각 하위 ViewModel에서 상위 ViewModel의 상태 변경을 수행할 대리자 초기화(콜백 연결)
             _homeViewModel.HomeBookQueryAction = () =>
             {
                 _bookQueryViewModel.InputQueryStr = _homeViewModel.InputQueryStr;
@@ -56,15 +64,16 @@ namespace LibraryBQ.ViewModel
                 }
             };
 
-            // 만료된 예약목록 처리
+            // 만료된 예약목록 사전 처리
             ExpirationReservation();
 
-            // 초기화면
+            // 초기화면(Home)
             CurrentViewModel = _homeViewModel;
         }
 
         // 커멘드 ----------------------------------------------
-        [RelayCommand] private void HomebtnClick() // 홈버튼 클릭 커멘드
+        // 홈버튼 클릭 커멘드: 홈화면으로 전환, 검색어 초기화
+        [RelayCommand] private void HomebtnClick() 
         {
             if (CurrentViewModel != _homeViewModel)
             {
@@ -73,7 +82,8 @@ namespace LibraryBQ.ViewModel
             }
         }
 
-        [RelayCommand] private void BookbtnClick() // 도서조회버튼 클릭 커멘드
+        // 도서조회버튼 클릭 커멘드: 도서검색 화면으로 전환 및 검색 조건 초기화
+        [RelayCommand] private void BookbtnClick()
         {
             if (CurrentViewModel != _bookQueryViewModel)
             {
@@ -82,7 +92,8 @@ namespace LibraryBQ.ViewModel
             }
         }
 
-        [RelayCommand] private void LoginbtnClick() // 로그인버튼 클릭 커멘드
+        // 로그인버튼 클릭 커멘드: 로그인하지 않았으면 로그인화면 전환, 로그인되어 있으면 로그아웃 처리
+        [RelayCommand] private void LoginbtnClick()
         {
             if (!_loginUserAccountStore.IsLogin)
             {
@@ -108,7 +119,8 @@ namespace LibraryBQ.ViewModel
             }
         }
 
-        [RelayCommand] private async void MyHistorybtnClick() // 이력조회버튼 클릭 커멘드
+        // 이력조회버튼 클릭 커멘드: 로그인 여부에 따라 로그인 유도 또는 이력화면 전환+데이터 갱신
+        [RelayCommand] private async void MyHistorybtnClick() 
         {
             if (!_loginUserAccountStore.IsLogin)
             {
@@ -134,13 +146,14 @@ namespace LibraryBQ.ViewModel
         }
 
         // 메소드 ----------------------------------------------
+        // 만료된 예약 목록 삭제 및 우선순위 자동정렬
         private void ExpirationReservation()
         {
             DateOnly today = DateOnly.FromDateTime(DateTime.Today);
 
             using (LibraryBQContext db = new LibraryBQContext())
             {
-                // 만료할 예약 목록 추출
+                // 만료할 예약 목록 조회
                 var expiredReservations = db.ReservationHistories.Where(x => x.ReservationDueDate < today).ToList();
 
                 if (expiredReservations.Count() > 0)

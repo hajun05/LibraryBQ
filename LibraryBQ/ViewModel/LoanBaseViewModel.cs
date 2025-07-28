@@ -14,10 +14,22 @@ using System.Windows;
 
 namespace LibraryBQ.ViewModel
 {
+    // LoanBaseViewModel: 도서 대출 및 예약 관련 공통 로직을 제공하는 베이스 ViewModel (MVVM, WPF)
+    // - 여러 ViewModel이 공통으로 사용할 수 있는 대출/예약 핵심 기능 집합 제공
+    // - 예약 우선순위 조정, 대출 이력과 예약 이력 생성, 조건 검증(연체, 대출 한도, 예약 중복 확인), 실제 DB 저장 처리 수행
+    // - 로그인 사용자 정보(LoginUserAccountStore)를 활용해 사용자 상태 및 권한 관리
+    // - BookCopies 컬렉션과 관련된 비즈니스 로직 추상화 및 재사용 용이성 제공
+    // [주요 역할]
+    // - 예약 이력 삭제에 따른 우선순위 재조정 기능 제공
+    // - 예약 및 대출 이력 객체 생성 및 DB 반영 메서드 제공
+    // - 대출 가능 여부, 연체 상태, 대출 한도 초과 여부 등의 검증 기능 포함
+    // - 대출 및 예약 수행 시 관련 UI 알림, 상태 업데이트 처리
     public partial class LoanBaseViewModel : ObservableObject
     {
         // 필드 및 프로퍼티 --------------------------------------------------------------
+        // 도서 부수(BookCopy) 정보들의 ObservableCollection (자식 뷰모델에서 바인딩/활용)
         private ObservableCollection<BookCopyDetail> _bookCopies;
+        // 현재 로그인 사용자 정보 저장 및 관련 상태 확인용
         private LoginUserAccountStore _loginUserAccount;
 
         public ObservableCollection<BookCopyDetail> BookCopies
@@ -32,7 +44,8 @@ namespace LibraryBQ.ViewModel
         }
 
         // 메소드 -----------------------------------------------------------------------
-        // '예약 목록' 삭제시 삭제된 예약과 같은 부수를 예약한 이력 목록의 우선순위 조정
+        // 예약목록에서 여러 개를 삭제할 때, 같은 부수(BookCopy)에 대한 모든 예약 이력의 우선순위를 밀어줌
+        // 삭제건보다 뒤(더 높은 숫자) Priority들은 1씩 감소
         protected void AdjustRangePriorityByDelete(List<ReservationHistory> deleteReservations, LibraryBQContext db)
         {
             if (deleteReservations.Count > 0)
@@ -54,7 +67,7 @@ namespace LibraryBQ.ViewModel
                 }
             }
         }
-        // '단일 예약' 삭제시 삭제된 예약과 같은 부수를 예약한 이력 목록의 우선순위 조정
+        // 예약목록에서 하나를 삭제할 때, ""
         protected void AdjustPriorityByDelete(ReservationHistory? deleteReservation, LibraryBQContext db)
         {
             if (deleteReservation != null)
@@ -70,7 +83,7 @@ namespace LibraryBQ.ViewModel
                     t.Priority -= 1;
             }
         }
-        // 새 예약 이력 생성
+        // 새 예약 이력을 생성 (마지막 우선순위 다음 번호로 할당)
         protected ReservationHistory NewReservationHistory(LibraryBQContext db, BookCopyDetail selectedBookCopy)
         {
             var lastReservationPriority = db.ReservationHistories
@@ -86,7 +99,7 @@ namespace LibraryBQ.ViewModel
 
             return reservationHistory;
         }
-        // 새 대출 이력 생성
+        // 새 대출 이력 생성 (대출일 = 오늘, 반납예정일 = 오늘 + 14일)
         protected LoanHistory NewLoanHistory(LibraryBQContext db, BookCopyDetail selectedBookCopy)
         {
             LoanHistory loanHistory = new LoanHistory();
@@ -98,7 +111,7 @@ namespace LibraryBQ.ViewModel
 
             return loanHistory;
         }
-        // 대출 및 예약 신청시 다른 대출 가능한 도서의 존재 여부 확인
+        // 현재 도서 이외에 대출 가능한 부수가 있는지 확인(있으면 true, 없으면 false)
         protected bool IsAvailableOtherBookCopy()
         {
             bool hasAvailableBookCopy = _bookCopies.Any(x => x.CurrentLoanStatusId == 1);
@@ -108,7 +121,7 @@ namespace LibraryBQ.ViewModel
             }
             return hasAvailableBookCopy;
         }
-        // 예약 신청시 이미 예약한 도서의 존재 여부 확인
+        // 똑같은 도서(Book)에 대해 이미 사용자가 예약한 건이 있는지 확인
         protected bool HasReservationBookCopy(LibraryBQContext db, BookCopyDetail selectedBookCopy)
         {
             bool hasReservation = db.ReservationHistories.Include(x => x.BookCopy)
@@ -121,7 +134,7 @@ namespace LibraryBQ.ViewModel
 
             return hasReservation;
         }
-        // 대출 및 예약이 불가능한 경우 탐지
+        // 대출/예약 전 금지 조건(연체, 한도초과, 이미 대출 등) 체크 (하나라도 true리턴시 진행 불가)
         protected bool CheckCanLoan(LibraryBQContext db, BookCopyDetail selectedBookCopy)
         {
             if (_loginUserAccount.HasOverdueLoan)
@@ -130,10 +143,16 @@ namespace LibraryBQ.ViewModel
                 return false;
             }
 
-            // 이미 대출한 도서인지 확인
-            var hasAlready = db.LoanHistories.Include(x => x.User)
-                .Where(x => x.ReturnDate == null && x.UserId == LoginUserAccount.CurrentLoginUserAccount.Id)
-                .Any(x => x.BookCopy.BookId == selectedBookCopy.BookId);
+            var currentUserLoans = db.LoanHistories.Include(x => x.User).Where(x => x.ReturnDate == null && x.UserId == _loginUserAccount.CurrentLoginUserAccount.Id);
+
+            if (_loginUserAccount.CurrentLoginUserAccount.MaxLoanNum <= currentUserLoans.Count())
+            {
+                MessageBox.Show("대출 한도를 초과했습니다.");
+                return false;
+            }
+
+            // 이미 같은 도서를 대출 중인지 확인
+            var hasAlready = currentUserLoans.Any(x => x.BookCopy.BookId == selectedBookCopy.BookId);
 
             if (hasAlready)
             {
@@ -143,16 +162,10 @@ namespace LibraryBQ.ViewModel
 
             return true;
         }
-        // 도서 대출 실행
+
+        // 도서 대출 로직: 대출 이력 추가, 예약 이력 삭제(있었다면 우선순위 반영), 부수 상태 변경, 메시지 출력
         protected void LoanBookCopy(LibraryBQContext db, BookCopyDetail selectedBookCopy)
         {
-            if (_loginUserAccount.CurrentLoginUserAccount.MaxLoanNum
-                <= db.LoanHistories.Include(x => x.User).Where(x => x.ReturnDate == null && x.UserId == _loginUserAccount.CurrentLoginUserAccount.Id).Count())
-            {
-                MessageBox.Show("대출 한도를 초과했습니다.");
-                return;
-            }
-
             LoanHistory loanHistory = NewLoanHistory(db, selectedBookCopy);
 
             // 대출 성공시 대출한 도서 예약 이력 삭제 및 예약 순번 조정
@@ -172,7 +185,8 @@ namespace LibraryBQ.ViewModel
 
             db.SaveChanges();
         }
-        // 도서 예약 실행
+
+        // 도서 예약 로직: 이미 같은 도서의 예약이 있으면 중단, 없으면 예약 이력 추가 및 메시지 출력
         protected void ReserveBookCopy(LibraryBQContext db, BookCopyDetail selectedBookCopy)
         {
             if (HasReservationBookCopy(db, selectedBookCopy))

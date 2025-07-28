@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace LibraryBQ.Service
 {
+    // DTO: Data Transfer Object의 약자, 데이터 전송 객체를 의미.
+    // 주로 애플리케이션의 서로 다른 계층(예: DB Model ↔ DTO ↔ ViewModel)이나 프로세스 간 데이터 전달에 사용.
+    // 데이터를 담아 포장하는 객체, 비즈니스 로직이나 처리 로직은 미포함.
     public partial class BookCopyDetail : ObservableObject
     {
         // 도서 관련 프로퍼티 ---------------------------------------------

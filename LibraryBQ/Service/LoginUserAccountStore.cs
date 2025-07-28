@@ -10,7 +10,8 @@ using System.Threading.Tasks;
 
 namespace LibraryBQ.Service
 {
-    // 현재 로그인한 사용자 정보 저장 서비스
+    // 현재 로그인한 사용자 정보를 저장 및 관리하는 싱글톤 서비스 클래스
+    // 여러 ViewModel에서 로그인 상태 및 사용자 정보에 쉽게 접근하고 변경사항을 감지하도록 지원
     public partial class LoginUserAccountStore : ObservableObject
     {
         // 필드와 프로퍼티 -------------------------------------------
@@ -24,6 +25,7 @@ namespace LibraryBQ.Service
             get { return _currentUserAccount; }
             set
             {
+                // 사용자가 로그인 했는지 여부 설정 및 사용자 이름과 연체 대출 여부 갱신
                 if (SetProperty(ref _currentUserAccount, value))
                 {
                     IsLogin = (_currentUserAccount != null);
@@ -59,6 +61,7 @@ namespace LibraryBQ.Service
             }
             return userAccount;
         }
+        // 싱글톤 인스턴스 반환 및 로그인 사용자 정보 할당
         public static LoginUserAccountStore Instance(User loginUser)
         {
             if (userAccount == null)
@@ -70,6 +73,7 @@ namespace LibraryBQ.Service
         }
 
         // 메소드 ----------------------------------------------------
+        // 현재 로그인 사용자 정보를 초기화하여 로그아웃 처리
         public void DetachLoginUserAccount()
         {
             if (CurrentLoginUserAccount != null)
@@ -78,6 +82,7 @@ namespace LibraryBQ.Service
             }
         }
 
+        // DbContext를 인자로 받아 연체 대출 여부를 확인하고 상태 갱신
         public bool CheckHasOverdueLoan(LibraryBQContext db)
         {
             HasOverdueLoan = false;
@@ -95,6 +100,7 @@ namespace LibraryBQ.Service
             return HasOverdueLoan;
         }
 
+        // 내부에서 DbContext를 생성하여 연체 대출 여부를 확인(오버로딩)
         public bool CheckHasOverdueLoan()
         {
             using (var db = new LibraryBQContext())

@@ -8,26 +8,55 @@
              d:DesignHeight="380" d:DesignWidth="750" Background="White">
     <Grid>
         <Grid.RowDefinitions>
+            <!-- 검색 박스 영역 -->
             <RowDefinition Height="2*"/>
+            <!-- 검색 결과 표시 영역 -->
             <RowDefinition Height="7*"/>
         </Grid.RowDefinitions>
-        
+
+        <!-- 검색 박스 영역
+            - 테두리(Border)로 감싼 중앙 정렬 검색창과 검색 버튼 배치
+            - 너비 여백 조절(Margin) 및 두꺼운 다크블루 테두리 스타일 적용
+            - 내부 그리드에서 텍스트 박스(검색어 입력)와 버튼을 수평 분할
+        -->
         <Border Grid.Row="0" Margin="110, 20, 110, 20" BorderBrush="DarkBlue" BorderThickness="2">
             <Grid Margin="15, 0, 0, 0">
                 <Grid.ColumnDefinitions>
+                    <!-- 검색어 입력란에 넉넉한 공간 부여, 버튼은 좁게 배치 -->
                     <ColumnDefinition Width="7*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
+
+                <!-- 검색어 입력용 TextBox
+                    - ViewModel의 InputQueryStr 프로퍼티와 양방향 바인딩
+                    - UpdateSourceTrigger=PropertyChanged 로 즉시 바인딩 반영
+                    - 텍스트가 변경될 때마다 TextChanged 이벤트 호출 (주로 플레이스홀더 숨김 처리용)
+                    - Enter 키 입력 시 BookQueryCommand 실행 (키 바인딩 적용)
+                    - 테두리 제거, 세련된 UI 강조용
+                -->
                 <TextBox x:Name="BookQueryBox" Grid.Column="0" Text="{Binding InputQueryStr, UpdateSourceTrigger=PropertyChanged}"  FontSize="18" VerticalAlignment="Center" BorderBrush="Transparent" BorderThickness="0" TextChanged="BookQueryBox_TextChanged">
                     <TextBox.InputBindings>
                         <KeyBinding Key="Enter" Command="{Binding BookQueryCommand}" />
                     </TextBox.InputBindings>
                 </TextBox>
+
+                <!-- 검색어 입력란 위에 겹쳐진 안내 문구용 TextBlock
+                    - IsHitTestVisible="False" 처리하여 사용자 클릭 무시 및 입력방해 제거
+                    - 텍스트 박스 안에서 초기 상태로 표시, BookQueryBox_TextChanged 이벤트로 숨김 처리
+                -->
                 <TextBlock x:Name="BookQueryPromptText" Grid.Column="0" Text="도서 통합 검색" FontSize="18" IsHitTestVisible="False" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="Gray"/>
+
+                <!-- 검색 버튼
+                    - 클릭시 BookQueryCommand 실행
+                    - 버튼 내부에 검색 아이콘 이미지 표시
+                    - 이미지 위에 같은 모양의 Rectangle과 OpacityMask로 색상 입히기 처리
+                      → 향후 스타일로 구조 개선 가능
+                    - Margin=-5로 이미지와 오버레이가 꽉차게 배치
+                -->
                 <Button x:Name="BookQuerybtn" Grid.Column="1" Background="Transparent" BorderBrush="Transparent" Command="{Binding BookQueryCommand}">
                     <Grid>
                         <Image Source="/Image/Search_Main.png" Margin="-5"/>
-                        <!--이미지 소스에 색상 입히기용 직사각형 컨트롤, 추후 스타일로 등록하고 원하는 색상과 이미지 소스를 고를 수 있도록 개선해보기-->
+                        <!-- 이미지 소스에 색상 입히기용 직사각형 컨트롤 오버레이 -->
                         <Rectangle Stroke="Transparent" Fill="DarkGray" Margin="-5">
                             <Rectangle.OpacityMask>
                                 <ImageBrush ImageSource="/Image/Search_Main.png"/>
@@ -38,6 +67,14 @@
             </Grid>
         </Border>
 
+        <!-- 검색 결과를 표시하는 DataGrid
+            - Grid.Row=1 영역에 배치, 행 구분선 숨김(GridLinesVisibility="None")
+            - 미리 생성된 BookDetail 리스트(QueriedBooks)에 바인딩, 선택 도서는 SelectedBook에 바인딩
+            - 읽기 전용은 아니지만 행 추가는 불가
+            - 헤더 숨김으로 UI 간결화
+            - 하나 행만 선택 가능(SelectionMode="Single")
+            - 컬럼은 DataGridTemplateColumn 하나로 구성, 커스텀 DataTemplate에 책 상세정보 표시
+        -->
         <DataGrid x:Name="QueriedBookResult" GridLinesVisibility="None" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="False" CanUserAddRows="False" SelectionMode="Single" 
                   HeadersVisibility="None" Background="White" BorderBrush="Transparent"
                   ItemsSource="{Binding QueriedBooks, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedBook}" >
@@ -45,6 +82,9 @@
                 <DataGridTemplateColumn>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
+                            <!-- 각 도서 항목의 상세 정보를 표시하는 레이아웃
+                                - 4개 행으로 제목, 저자, 복사본 수 및 구분선 표시
+                            -->
                             <Grid Margin="10" Height="120">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="40"/>

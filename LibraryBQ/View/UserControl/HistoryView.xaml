@@ -8,17 +8,30 @@
              d:DesignHeight="380" d:DesignWidth="750" Background="White">
     <Grid Margin="50, 20">
         <Grid.RowDefinitions>
+            <!-- 대출 타이틀 및 버튼 영역 -->
             <RowDefinition Height="*"/>
+            <!-- 대출 이력 목록 DataGrid -->
             <RowDefinition Height="3*"/>
+            <!-- 예약 타이틀 및 버튼 영역 -->
             <RowDefinition Height="*"/>
+            <!-- 예약 이력 목록 DataGrid -->
             <RowDefinition Height="3*"/>
         </Grid.RowDefinitions>
 
+        <!-- 대출 이력 상단 타이틀 텍스트 -->
         <TextBlock Grid.Row="0" Text="대출 이력" FontSize="18" FontWeight="SemiBold" Foreground="DarkBlue" VerticalAlignment="Center"/>
+
+        <!-- 대출 이력 관련 버튼 2개: 반납, 연장
+             - 각각 현재 선택된 대출 이력을 CommandParameter로 전달하여 처리
+             - 버튼들은 ViewModel 커맨드(ReturnbtnClickCommand 및 ExtensionbtnClickCommand)에 바인딩 -->
         <Button x:Name="Returnbtn" Grid.Row="0" Margin="90,5,450,5" Content="반납" FontSize="15" FontWeight="SemiBold" Foreground="White" Background="DarkBlue"
                 Command="{Binding ReturnbtnClickCommand}" CommandParameter="{Binding SelectedItem, ElementName=gridLoan}"/>
         <Button x:Name="Extensionbtn" Grid.Row="0" Margin="210,5,320,5" Content="연장" FontSize="15" FontWeight="SemiBold" Foreground="White" Background="DarkBlue"
                 Command="{Binding ExtensionbtnClickCommand}" CommandParameter="{Binding SelectedItem, ElementName=gridLoan}"/>
+
+        <!-- 대출 이력 목록 표시 DataGrid
+             - ItemsSource에 ViewModel의 CurrentLoanHistories 바인딩 (ObservableCollection)
+             - 선택된 아이템은 SelectedItem으로 SelectedBook 바인딩과 유사한 역할 수행 -->
         <DataGrid x:Name="gridLoan" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" FontSize="12"
                   ItemsSource="{Binding CurrentLoanHistories}">
             <DataGrid.ColumnHeaderStyle>
@@ -28,12 +41,15 @@
                     <Setter Property="FontWeight" Value="SemiBold"/>
                 </Style>
             </DataGrid.ColumnHeaderStyle>
+
             <DataGrid.Columns>
+                <!-- 식별용 숨긴 컬럼 -->
                 <DataGridTextColumn Header="BookId" Binding="{Binding BookId}" Width="*" Visibility="Hidden"/>
                 <DataGridTextColumn Header="BookCopyId" Binding="{Binding BookCopyId}" Width="*" Visibility="Hidden"/>
                 <DataGridTextColumn Header="LoanHistoryId" Binding="{Binding CurrentLoanHistoryId}" Width="*" Visibility="Hidden"/>
                 <DataGridTextColumn Header="LoanUserId" Binding="{Binding CurrentLoanUserId}" Width="*" Visibility="Hidden"/>
                 <DataGridTextColumn Header="제목" Binding="{Binding Title}" Width="1.5*"/>
+                <!-- 화면 표시 컬럼: 제목, 저자, 등록번호, 연장횟수, 반납예정일 -->
                 <DataGridTextColumn Header="저자" Binding="{Binding Author}" Width="*"/>
                 <DataGridTextColumn Header="등록번호" Binding="{Binding ClassificationNumber}" Width="*"/>
                 <DataGridTextColumn Header="연장횟수" Binding="{Binding ExtensionCount}" Width="0.7*"/>
@@ -41,11 +57,19 @@
             </DataGrid.Columns>
         </DataGrid>
 
+        <!-- 예약 이력 상단 타이틀 텍스트 -->
         <TextBlock Grid.Row="2" Text="예약 이력" FontSize="18" FontWeight="SemiBold" Foreground="DarkBlue" VerticalAlignment="Center"/>
+
+        <!-- 예약 이력 관련 버튼 2개: 취소, 대출
+             - 각각 현재 선택된 예약 이력을 CommandParameter로 전달하여 처리
+             - ViewModel의 CancelbtnClickCommand, LoanbtnClickCommand에 바인딩 -->
         <Button x:Name="Cancelbtn" Grid.Row="2" Margin="90,5,450,5" Content="취소" FontSize="15" FontWeight="SemiBold" Foreground="White" Background="DarkBlue"
                 Command="{Binding CancelbtnClickCommand}" CommandParameter="{Binding SelectedItem, ElementName=gridReservation}"/>
         <Button x:Name="Loanbtn" Grid.Row="2" Margin="210,5,320,5" Content="대출" FontSize="15" FontWeight="SemiBold" Foreground="White" Background="DarkBlue"
                 Command="{Binding LoanbtnClickCommand}" CommandParameter="{Binding SelectedItem, ElementName=gridReservation}"/>
+
+        <!-- 예약 이력 목록 표시 DataGrid
+             - ItemsSource에 ViewModel의 CurrentReservationHistories 바인딩 (ObservableCollection) -->
         <DataGrid x:Name="gridReservation" Grid.Row="3" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" FontSize="12"
                   ItemsSource="{Binding CurrentReservationHistories}">
             <DataGrid.ColumnHeaderStyle>
@@ -56,10 +80,12 @@
                 </Style>
             </DataGrid.ColumnHeaderStyle>
             <DataGrid.Columns>
+                <!-- 식별용 숨긴 컬럼 -->
                 <DataGridTextColumn Header="BookId" Binding="{Binding BookId}" Width="*" Visibility="Hidden"/>
                 <DataGridTextColumn Header="BookCopyId" Binding="{Binding BookCopyId}" Width="*" Visibility="Hidden"/>
                 <DataGridTextColumn Header="ReservationHistoryId" Binding="{Binding CurrentReservationHistoryId}" Width="*" Visibility="Hidden"/>
                 <DataGridTextColumn Header="ReservationUserId" Binding="{Binding CurrentReservationUserId}" Width="*" Visibility="Hidden"/>
+                <!-- 화면 표시용 컬럼: 제목, 저자, 등록번호, 예약순번, 예약만기일 -->
                 <DataGridTextColumn Header="제목" Binding="{Binding Title}" Width="1.5*"/>
                 <DataGridTextColumn Header="저자" Binding="{Binding Author}" Width="*"/>
                 <DataGridTextColumn Header="등록번호" Binding="{Binding ClassificationNumber}" Width="*"/>

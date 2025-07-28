@@ -11,37 +11,69 @@
         <Border Margin="100, 50, 100, 100">
             <Grid>
                 <Grid.RowDefinitions>
+                    <!-- 상단 로그인 아이콘 및 텍스트 영역 -->
                     <RowDefinition Height="*"/>
+                    <!-- 구분선 -->
                     <RowDefinition Height="Auto"/>
+                    <!-- 안내 문구 -->
                     <RowDefinition Height="*"/>
+                    <!-- 아이디 Label + TextBox -->
                     <RowDefinition Height="*"/>
+                    <!-- 비밀번호 Label + TextBox -->
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
+                <!-- 로그인 헤더 영역
+                    - 로그인 아이콘과 "회원 로그인" 텍스트 수평 배치
+                    - 아이콘 위에 같은 이미지를 색으로 마스킹 처리한 Rectangle을 겹쳐서 컬러 톤 강조
+                -->
                 <Grid Grid.Row="0" HorizontalAlignment="Center">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
+                    <!-- 로그인 아이콘 -->
                     <Image Grid.Column="0" Source="/Image/Login.png"/>
+                    <!-- 아이콘 색상 강조용 마스킹 -->
                     <Rectangle Grid.Column="0" Stroke="Transparent" Fill="DarkBlue">
                         <Rectangle.OpacityMask>
                             <ImageBrush ImageSource="/Image/Login.png"/>
                         </Rectangle.OpacityMask>
                     </Rectangle>
+                    <!-- 로그인 제목 텍스트 -->
                     <TextBlock Text=" 회원 로그인" Grid.Column="1" FontSize="22" FontWeight="SemiBold" Foreground="DarkBlue" VerticalAlignment="Center"/>
                 </Grid>
 
+                <!-- 헤더와 본문 구분을 위한 굵은 구분선 -->
                 <Line Grid.Row="1" Margin="0,5,0,0" X1="0" X2="550" Y1="0" Y2="0" StrokeThickness="5" Stroke="DarkBlue"/>
 
                 <TextBlock Text="로그인을 하시면 더 많은 도서관의 서비스를 이용하실 수 있습니다." Grid.Row="2" FontSize="16" Foreground="Gray" VerticalAlignment="Center"/>
 
+                <!-- 아이디 입력 부분
+                    - 라벨과 텍스트 박스 수평 배치
+                    - '아이디' 라벨은 왼쪽 정렬로 배치
+                    - TextBox는 오른쪽 편에 배치, 넉넉한 너비와 높이 지정
+                    - ViewModel의 InputUserNo 프로퍼티와 양방향 바인딩되어 입력 실시간 반영
+                    - 텍스트 수직 중앙 정렬로 가독성 향상
+                -->
                 <TextBlock Text="아이디" Grid.Row="3" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                 <TextBox Name="txtUserNo" Grid.Row="3" Width="350" Height="40" Margin="0,0,120,0" HorizontalAlignment="Right" VerticalAlignment="Center"
                          FontSize="15" Text="{Binding InputUserNo, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center"/>
+
+                <!-- 비밀번호 입력 부분
+                    - 아이디와 동일한 레이아웃
+                    - ViewModel의 InputPassword 프로퍼티와 바인딩
+                    - 현재는 일반 TextBox 타입이며, 필요시 PasswordBox로 변경 가능
+                -->
                 <TextBlock Text="비밀번호" Grid.Row="4" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                 <TextBox x:Name="txtPassword" Grid.Row="4" Width="350" Height="40" Margin="0,0,120,0" HorizontalAlignment="Right" VerticalAlignment="Center"
                          FontSize="15" Text="{Binding InputPassword, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center"/>
+
+                <!-- 로그인 버튼
+                    - 아이디+비밀번호 영역 오른쪽에 크게 걸쳐 배치 (Grid.RowSpan=2)
+                    - 배경색은 진한 파란색, 글자 흰색으로 강조
+                    - 클릭 시 ViewModel의 LoginbtnClickCommand 실행 (MVVM 커맨드 바인딩)
+                -->
                 <Button x:Name="btnLogin" Content="로그인" Grid.Row="3" Grid.RowSpan="2" Width="100" Height="100" FontSize="18" Foreground="White" Background="DarkBlue" HorizontalAlignment="Right" VerticalAlignment="Center"
                         Command="{Binding LoginbtnClickCommand}"/>
             </Grid>

@@ -15,6 +15,7 @@ namespace LibraryBQ.Service
 
         public string Author { get; set; } = null!;
 
+        // Book 클래스는 List<BookCopy> 컬렉션, Count 이외 불필요한 메모리 저장 방지.
         public int BookCopiesCount { get; set; }
 
         public BookDetail() {}

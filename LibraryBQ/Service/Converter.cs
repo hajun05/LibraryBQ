@@ -9,7 +9,7 @@ using System.Windows.Data;
 
 namespace LibraryBQ.Service
 {
-    // Bool 프로퍼티를 Visibility에 바인딩하기 위한 변환기(true -> visible, false -> collapsed)
+    // Bool 프로퍼티를 Visibility에 바인딩하기 위한 변환기 클래스(true -> visible, false -> collapsed)
     public class BooleanToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -23,7 +23,7 @@ namespace LibraryBQ.Service
         }
     }
 
-    // Bool 프로퍼티를 Visibility에 바인딩하기 위한 역변환기(false -> visible, true -> collapsed)
+    // Bool 프로퍼티를 Visibility에 바인딩하기 위한 역변환기 클래스(false -> visible, true -> collapsed)
     public class ReverseBooleanToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
