@@ -7,6 +7,7 @@
         xmlns:views="clr-namespace:LibraryBQ.View"
         xmlns:viewmodels="clr-namespace:LibraryBQ.ViewModel"
         xmlns:services="clr-namespace:LibraryBQ.Service"
+        xmlns:customcontrols="clr-namespace:LibraryBQ.CustomControls"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="CanMinimize" Icon="/Image/Logo_Simple.png"
         Name="LibraryBQMain" Height="550" Width="750">
@@ -150,19 +151,16 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" Text="자료검색 " FontSize="18" FontWeight="SemiBold" Foreground="DarkBlue" VerticalAlignment="Center"/>
-                        <!-- 아이콘 이미지 -->
-                        <Image Grid.Column="1" Source="/Image/Search.png"/>
-                        <!-- 이미지 소스에 색상 입히기용 직사각형 컨트롤 오버레이
-                            - 이미지 위에 같은 이미지 모양을 색상으로 마스킹 처리
-                            - Rectangle에 같은 이미지 브러시를 OpacityMask로 지정하여 색상 변화 가능
-                            - 현재는 짙은 회색(DarkGray)으로 색상 지정
-                            - UI 일관성 및 강조를 위한 기술적 트릭
-                        -->
+                        
+                        <!--<Image Grid.Column="1" Source="/Image/Search.png"/>
                         <Rectangle Grid.Column="1" Stroke="Transparent" Fill="DarkBlue">
                             <Rectangle.OpacityMask>
                                 <ImageBrush ImageSource="/Image/Search.png"/>
                             </Rectangle.OpacityMask>
-                        </Rectangle>
+                        </Rectangle>-->
+                        
+                        <!-- UserControl로 구현한 이미지(아이콘) 마스킹 컨트롤 -->
+                        <customcontrols:ImageMask Grid.Column="1" MaskingColor="DarkBlue" MaskImageSource="/Image/Search.png" />
                     </Grid>
                 </Button>
 
@@ -174,14 +172,9 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" Text="이용이력 " FontSize="18" FontWeight="SemiBold" Foreground="DarkBlue" VerticalAlignment="Center"/>
-                        <!-- 아이콘 이미지 -->
-                        <Image Grid.Column="1" Source="/Image/Login_History.png"/>
-                        <!-- 이미지 소스에 색상 입히기용 직사각형 컨트롤 오버레이 -->
-                        <Rectangle Grid.Column="1" Stroke="Transparent" Fill="DarkBlue">
-                            <Rectangle.OpacityMask>
-                                <ImageBrush ImageSource="/Image/Login_History.png"/>
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
+                        
+                        <!-- UserControl로 구현한 이미지(아이콘) 마스킹 컨트롤 -->
+                        <customcontrols:ImageMask Grid.Column="1" MaskingColor="DarkBlue" MaskImageSource="/Image/Login_History.png" />
                     </Grid>
                 </Button>
             </Grid>

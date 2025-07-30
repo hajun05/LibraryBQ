@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:LibraryBQ.View"
+             xmlns:customcontrols="clr-namespace:LibraryBQ.CustomControls"
              mc:Ignorable="d" 
              d:DesignHeight="380" d:DesignWidth="750"
              Background="White">
@@ -32,14 +33,9 @@
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
-                    <!-- 로그인 아이콘 -->
-                    <Image Grid.Column="0" Source="/Image/Login.png"/>
-                    <!-- 아이콘 색상 강조용 마스킹 -->
-                    <Rectangle Grid.Column="0" Stroke="Transparent" Fill="DarkBlue">
-                        <Rectangle.OpacityMask>
-                            <ImageBrush ImageSource="/Image/Login.png"/>
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
+
+                    <!-- UserControl로 구현한 이미지(아이콘) 마스킹 컨트롤 -->
+                    <customcontrols:ImageMask MaskingColor="DarkBlue" MaskImageSource="/Image/Login.png" />
                     <!-- 로그인 제목 텍스트 -->
                     <TextBlock Text=" 회원 로그인" Grid.Column="1" FontSize="22" FontWeight="SemiBold" Foreground="DarkBlue" VerticalAlignment="Center"/>
                 </Grid>

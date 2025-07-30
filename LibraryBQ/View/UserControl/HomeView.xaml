@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:LibraryBQ.View"
+             xmlns:customcontrols="clr-namespace:LibraryBQ.CustomControls"
              mc:Ignorable="d" 
              d:DesignHeight="380" d:DesignWidth="750"
              Background="White">
@@ -42,13 +43,8 @@
                 -->
                 <Button x:Name="HomeQuerybtn" Grid.Column="1" Background="Transparent" BorderBrush="Transparent" Command="{Binding HomeBookQueryCommand}">
                     <Grid>
-                        <Image Source="/Image/Search_Main.png"/>
-                        <!-- 이미지 소스에 색상 입히기용 직사각형 컨트롤 오버레이 -->
-                        <Rectangle Stroke="Transparent" Fill="DarkGray">
-                            <Rectangle.OpacityMask>
-                                <ImageBrush ImageSource="/Image/Search_Main.png"/>
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
+                        <!-- UserControl로 구현한 이미지(아이콘) 마스킹 컨트롤 -->
+                        <customcontrols:ImageMask MaskingColor="DarkGray" MaskImageSource="/Image/Search_Main.png" />
                     </Grid>
                 </Button>
             </Grid>
