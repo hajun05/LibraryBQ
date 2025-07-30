@@ -63,7 +63,7 @@ namespace LibraryBQ
             services.AddSingleton<IWindowService, WindowService>();
             services.AddSingleton<IBookCopyViewModelFactory, BookCopyViewModelFactory>();
 
-            // ViewModel DI 등록: Transient로 요청할 때마다 새 인스턴스 생성
+            // ViewModel DI 등록
             services.AddTransient<MainWindowViewModel>();
             services.AddTransient<HomeViewModel>();
             services.AddTransient<BookQueryViewModel>();
@@ -71,13 +71,18 @@ namespace LibraryBQ
             services.AddTransient<HistoryViewModel>();
             services.AddTransient<BookCopyViewModel>();
 
-            // View DI 등록: 화면 구성 요소 역시 DI로 요청/주입
+            // View DI 등록: DI 컨테이너를 통해 서비스를 주입, 제공하는 View만 등록
+            // UserControl이 아닌 Window는 Transient 등록 권장
+            // 사용자가 열 때마다 새로운 창이 필요, 같은 인스턴스를 재사용하는 것이 불가능하거나 부적절
             services.AddTransient<MainWindow>();
-            services.AddSingleton<HomeView>();
-            services.AddSingleton<BookQueryView>();
-            services.AddTransient<LoginView>();
-            services.AddSingleton<HistoryView>();
-            services.AddTransient<BookCopyView>(); // UserControl이 아닌 Window는 Transient 등록 권장
+            services.AddTransient<BookCopyView>();
+
+            // ViewModel-View 매핑은 MainWindow.xaml의 ContentControl + DataTemplate 구조로 처리
+            // 매핑은 타입(상태)에 따라 다른 객체를 "연결"하는 규칙. "주입"이 아님
+            //services.AddSingleton<HomeView>();
+            //services.AddSingleton<BookQueryView>();
+            //services.AddTransient<LoginView>();
+            //services.AddSingleton<HistoryView>();
 
             // 서비스 컬렉션 빌드 후 DI 컨테이너(ServiceProvider) 반환
             // 이 컨테이너가 앱 전체에서 View, ViewModel, Service 등 객체 생성/주입 책임
